@@ -162,6 +162,11 @@ public class ProfileActivity extends Activity {
                     Intent intent = new Intent(ProfileActivity.this, AvatarActivity.class);
                     startActivity(intent);
                 }
+                if (menuItem.getType().equals("feed")) {
+                    Intent intent = new Intent(ProfileActivity.this, RantActivity.class);
+                    intent.putExtra("id",String.valueOf(menuItem.getId()));
+                    startActivity(intent);
+                }
             }
         }));
 

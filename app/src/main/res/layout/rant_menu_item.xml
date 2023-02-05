@@ -15,7 +15,6 @@
         android:textSize="10dp"
         android:layout_toStartOf="@+id/menu_icon"
         android:padding="4dp"
-        android:maxLines="5"
         android:background="@drawable/rounded_corner"
         android:fontFamily="@font/nunito"
         android:textColor="#FFFFFF"
