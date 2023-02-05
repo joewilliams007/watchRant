@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="devDark">#393a52</color>
+    <color name="devBlue">#41435b</color>
+    <color name="devLight">#000000</color>
+</resources>

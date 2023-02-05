@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/menu_container"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <TextView
+        android:id="@+id/menu_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Menu Item"
+        android:textSize="10dp"
+        android:layout_toStartOf="@+id/menu_icon"
+        android:padding="4dp"
+        android:maxLines="5"
+        android:background="@drawable/rounded_corner"
+        android:fontFamily="@font/nunito"
+        android:textColor="#FFFFFF"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/details_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/menu_item"
+        android:fontFamily="@font/nunito"
+        android:gravity="end"
+        android:padding="4dp"
+        android:layout_marginEnd="4dp"
+        android:textColor="#FFFFFF"
+        android:text="d"
+        android:textSize="10dp"
+        tools:ignore="HardcodedText" />
+
+    <ImageView
+        android:id="@+id/menu_icon"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/dev_rant"
+        tools:ignore="HardcodedText" />
+</RelativeLayout>
