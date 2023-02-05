@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.wear.widget.BoxInsetLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/devDark"
+    android:padding="50dp"
+    tools:context=".LoginActivity"
+    tools:deviceIds="wear">
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:textColor="#FFFFFF"
+        android:textColorHint="#FFFFFF"
+        android:inputType="textPersonName"
+        android:hint="username" />
+
+    <TextView
+        android:id="@+id/textViewSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:gravity="center"
+        android:background="@drawable/rounded_corner"
+        android:padding="5dp"
+        android:onClick="enter"
+        android:layout_below="@+id/editText"
+        android:layout_marginTop="50dp"
+        android:text="submit username" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:indeterminateTint="@color/devBlue"
+        android:indeterminate="true"
+        app:layout_boxedEdges="all"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</androidx.wear.widget.BoxInsetLayout>

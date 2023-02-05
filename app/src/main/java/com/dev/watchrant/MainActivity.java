@@ -2,6 +2,7 @@ package com.dev.watchrant;
 
 import static com.dev.watchrant.ProfileActivity.profile_rants;
 import static com.dev.watchrant.RetrofitClient.BASE_URL;
+import static com.dev.watchrant.SearchActivity.search_rants;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -13,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.wear.widget.SwipeDismissFrameLayout;
 import androidx.wear.widget.WearableLinearLayoutManager;
 import androidx.wear.widget.WearableRecyclerView;
 
@@ -28,7 +30,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends Activity {
-    String sort;
+    public static String sort = "recent";
+
     com.dev.watchrant.databinding.ActivityMainBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +40,37 @@ public class MainActivity extends Activity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        sort = "recent";
-        if (profile_rants!=null) {
+        Intent intent = getIntent();
+        Boolean isSearch = intent.getBooleanExtra("isSearch",false);
+
+        if (isSearch) {
+            toast("found "+search_rants.size()+" search results");
+            createFeedList(search_rants);
+        } else if (profile_rants!=null) {
             createFeedList(profile_rants);
             profile_rants = null;
         } else {
             requestFeed();
         }
+        SwipeDismissFrameLayout swipeDismissFrameLayout = findViewById(R.id.swipeFeed);
+        swipeDismissFrameLayout.addCallback(new SwipeDismissFrameLayout.Callback() {
+            @Override
+            public void onSwipeStarted(SwipeDismissFrameLayout layout) {
+                super.onSwipeStarted(layout);
+            }
+
+            @Override
+            public void onSwipeCanceled(SwipeDismissFrameLayout layout) {
+                super.onSwipeCanceled(layout);
+            }
+
+            @Override
+            public void onDismissed(SwipeDismissFrameLayout layout) {
+                super.onDismissed(layout);
+                Intent intent = new Intent(MainActivity.this, OptionActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void requestFeed() {

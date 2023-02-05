@@ -85,7 +85,10 @@ public class ProfileActivity extends Activity {
 
                     menuItems.add(new RantItem(null,user_avatar,0, "avatar",0,0));
                     menuItems.add(new RantItem(null,username+" +"+score,0, "details",0,0));
-                    menuItems.add(new RantItem(null,about,0,"info",0,0));
+
+                    if (about.length()>0) {
+                        menuItems.add(new RantItem(null,about,0,"info",0,0));
+                    }
                     if (github.length()>0) {
                         menuItems.add(new RantItem(null,
                                 "github: "+github ,0,"info",0,0));
@@ -105,10 +108,12 @@ public class ProfileActivity extends Activity {
                                     +"\nfavorites: "+favorites_count
                                     +"\ncollabs: "+collabs_count,0,"info_small",0,0));
 
-                    menuItems.add(new RantItem(null, "skills: "+skills,0,"info_small",0,0));
+                    if (skills.length()>0) {
+                        menuItems.add(new RantItem(null, "skills: "+skills,0,"info_small",0,0));
+                    }
                     menuItems.add(new RantItem(null,"RANTS",0, "info",0,0));
 
-                    createFeedList(menuItems);
+                    createFeedList(profile_rants,menuItems);
                 } else if (response.code() == 429) {
                     // Handle unauthorized
                 } else {
@@ -126,7 +131,15 @@ public class ProfileActivity extends Activity {
     }
 
 
-    public void createFeedList(ArrayList<RantItem> menuItems){
+    public void createFeedList(List<Rants> rants,ArrayList<RantItem> menuItems){
+        for (Rants rant : rants){
+            String s = rant.getText();
+            if (s.length()>100) {
+                s = s.substring(0, Math.min(s.length(), 100))+"...";
+            }
+
+            menuItems.add(new RantItem(null,s,rant.getId(),"feed",rant.getScore(), rant.getNum_comments()));
+        }
         build(menuItems);
     }
 
@@ -151,6 +164,8 @@ public class ProfileActivity extends Activity {
                 }
             }
         }));
+
+
     }
 
     public void toast(String message) {

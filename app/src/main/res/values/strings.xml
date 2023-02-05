@@ -50,4 +50,7 @@
     </string>
     <string name="title_activity_profile">ProfileActivity</string>
     <string name="title_activity_avatar">AvatarActivity</string>
+    <string name="title_activity_option">OptionActivity</string>
+    <string name="title_activity_search">SearchActivity</string>
+    <string name="title_activity_login">LoginActivity</string>
 </resources>

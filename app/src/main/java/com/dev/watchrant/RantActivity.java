@@ -158,18 +158,22 @@ private ActivityRantBinding binding;
             public void onItemClicked(final Integer menuPosition) {
                 RantItem menuItem = menuItems.get(menuPosition);
 
-                Intent intent;
+
                 if (menuItem.getType().equals("image")) {
                     isImage = true;
-                    intent = new Intent(RantActivity.this, AvatarActivity.class);
-                } else if (menuItem.getId()!=0) {
+                    Intent intent = new Intent(RantActivity.this, AvatarActivity.class);
+                    startActivity(intent);
+                } else if (menuItem.getId() != 0) {
                     isImage = false;
-                    intent = new Intent(RantActivity.this, ProfileActivity.class);
-                    intent.putExtra("id",String.valueOf(menuItem.getId()));
+                    Intent intent = new Intent(RantActivity.this, ProfileActivity.class);
+                    intent.putExtra("id", String.valueOf(menuItem.getId()));
+                    startActivity(intent);
+                } else if (menuItem.getType().equals("avatar")) {
+                    Intent intent = new Intent(RantActivity.this, AvatarActivity.class);
+                    startActivity(intent);
                 } else {
-                    intent = new Intent(RantActivity.this, AvatarActivity.class);
+
                 }
-                startActivity(intent);
             }
         }));
     }

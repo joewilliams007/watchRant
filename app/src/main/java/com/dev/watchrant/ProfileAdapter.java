@@ -62,7 +62,7 @@ public class ProfileAdapter extends WearableRecyclerView.Adapter<ProfileAdapter.
     @Override
     public void onBindViewHolder(RecyclerViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         RantItem data_provider = dataSource.get(position);
-
+        holder.setIsRecyclable(false);
         switch (data_provider.getType()) {
             case "avatar":
                 holder.menuItem.setVisibility(View.GONE);
