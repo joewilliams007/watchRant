@@ -69,6 +69,8 @@ public class RantAdapter extends WearableRecyclerView.Adapter<RantAdapter.Recycl
     public void onBindViewHolder(RecyclerViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         RantItem data_provider = dataSource.get(position);
         holder.setIsRecyclable(false);
+        holder.menuItem.setMaxLines(200);
+        holder.detailsItem.setMaxLines(200);
         switch (data_provider.getType()) {
             case "avatar":
                 holder.menuItem.setVisibility(View.GONE);
