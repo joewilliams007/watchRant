@@ -7,11 +7,14 @@ Tested and developed on Samnsung watch 5.
 
 Features:
 
-rant feed (top/recent),
+rant feed (top/recent/algo),
 rant (image supported),
 comments (image not yet supported),
 profile (about/location/.../avatar/rants),
 download (avatars/rant images)
+search,
+updateBtn,
+about
 
 Not yet:
 
