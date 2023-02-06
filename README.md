@@ -7,32 +7,15 @@ Tested and developed on Samnsung watch 5.
 
 ## Features
 
-| Sticker Creator |                Feature           |
+| Available |                Feature           |
 | :-----------: | :--------------------------------: |
-|       ✅       | Send Photo with Caption          |
-|       ✅       | Reply A Photo                    |
-|       ✅       | Image Url                        |
-|       ✅       | Send Video or GIF with Caption   |
+|       ✅       | feed (top/recent/algo)          |
+|       ✅       | rant (images supported)                   |
+|       ✅       | comments (images not supported)                        |
+|       ✅       | profile (about/website/.../rants)   |
+|       ✅       | update (checks for updates)   |
+|       ✅       | download (images/avatars)   |
+|       ✅       | search (rants/profiles)   |
+|       ✅       | open on phone   |
 
-Features:
-
-rant feed (top/recent/algo),
-
-rant (image supported),
-
-comments (image not yet supported),
-
-profile (about/location/.../avatar/rants),
-
-download (avatars/rant images)
-
-search,
-
-updateBtn,
-
-about
-
-Not yet:
-
-logging in,
-stories
+More to come!
