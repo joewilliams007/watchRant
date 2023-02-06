@@ -6,6 +6,7 @@ import static com.dev.watchrant.RetrofitClient.BASE_URL;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -143,7 +144,15 @@ public class RantAdapter extends WearableRecyclerView.Adapter<RantAdapter.Recycl
                     holder.detailsItem.setText("+" + data_provider.getScore() + " comnts: " + data_provider.getNumComments());
                 }
                 break;
-
+            case "phone":
+                holder.menuItem.setVisibility(View.VISIBLE);
+                holder.menuIcon.setVisibility(View.GONE);
+                holder.menuItem.setText(data_provider.getText());
+                holder.detailsItem.setVisibility(View.GONE);
+                holder.menuItem.setGravity(Gravity.CENTER);
+                holder.menuItem.setBackground(null);
+                holder.menuItem.setTextColor(Color.parseColor("#f4945c"));
+                break;
 
         }
 

@@ -8,6 +8,12 @@ public class Rants {
     int num_comments;
     Boolean edited;
     String user_username;
+    String link;
+
+    public String getLink() {
+        return link;
+    }
+
     int user_score;
     int user_id;
     User_avatar user_avatar;

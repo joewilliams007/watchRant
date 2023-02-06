@@ -1,5 +1,6 @@
 package com.dev.watchrant;
 
+import static com.dev.watchrant.RantActivity.openUrl;
 import static com.dev.watchrant.RetrofitClient.BASE_URL;
 
 import android.annotation.SuppressLint;
@@ -34,6 +35,8 @@ public class ProfileActivity extends Activity {
     public static String profile_avatar;
     public static String rant_image;
     public static Boolean isImage = false;
+    public String username;
+    String github;
     String id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,13 +67,13 @@ public class ProfileActivity extends Activity {
                     assert response.body() != null;
 
                     String user_avatar = response.body().getProfile().getAvatar().getI();
-                    String username = response.body().getProfile().getUsername();
+                    username = response.body().getProfile().getUsername();
                     int score = response.body().getProfile().getScore();
                     String about = response.body().getProfile().getAbout();
                     String location = response.body().getProfile().getLocation();
                     int created_time = response.body().getProfile().getCreated_time();
                     String skills = response.body().getProfile().getSkills();
-                    String github = response.body().getProfile().getGithub();
+                    github = response.body().getProfile().getGithub();
                     String website = response.body().getProfile().getWebsite();
                     User_avatar avatar = response.body().getProfile().getAvatar();
                     Counts counts = response.body().getProfile().getContent().getCounts();
@@ -79,6 +82,7 @@ public class ProfileActivity extends Activity {
                     int comments_count = counts.getComments();
                     int favorites_count = counts.getFavorites();
                     int collabs_count = counts.getCollabs();
+
                     profile_rants = response.body().getProfile().getContent().getContent().getRants();
                     profile_avatar = user_avatar;
                     ArrayList<RantItem> menuItems = new ArrayList<>();
@@ -91,11 +95,10 @@ public class ProfileActivity extends Activity {
                     }
                     if (github.length()>0) {
                         menuItems.add(new RantItem(null,
-                                "github: "+github ,0,"info",0,0));
+                                "github: "+github ,0,"phone",0,0));
                     }
                     if (website.length()>0) {
-                        menuItems.add(new RantItem(null,
-                                "website: "+website ,0,"info",0,0));
+                        menuItems.add(new RantItem(null,website,0, "phone",0,0));
                     }
                     if (location.length()>0) {
                         menuItems.add(new RantItem(null,
@@ -111,6 +114,7 @@ public class ProfileActivity extends Activity {
                     if (skills.length()>0) {
                         menuItems.add(new RantItem(null, "skills: "+skills,0,"info_small",0,0));
                     }
+                    menuItems.add(new RantItem(null,"OPEN ON PHONE",0, "phone",0,0));
                     menuItems.add(new RantItem(null,"RANTS",0, "info",0,0));
 
                     createFeedList(profile_rants,menuItems);
@@ -157,12 +161,19 @@ public class ProfileActivity extends Activity {
                 if(menuItem.getText().equals("RANTS")) {
                     Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
                     startActivity(intent);
-                }
-                if(menuItem.getType().equals("avatar")) {
+                } else if (menuItem.getType().equals("avatar")) {
                     Intent intent = new Intent(ProfileActivity.this, AvatarActivity.class);
                     startActivity(intent);
-                }
-                if (menuItem.getType().equals("feed")) {
+                } else if (menuItem.getType().equals("phone")){
+                    toast("launching on phone");
+                    if (menuItem.getText().equals("OPEN ON PHONE")) {
+                        openUrl("https://devrant.com/users/"+username);
+                    } else if (menuItem.getText().contains("github:")) {
+                        openUrl("https://github.com/"+github);
+                    } else {
+                        openUrl(menuItem.getText());
+                    }
+                } else if (menuItem.getType().equals("feed")) {
                     Intent intent = new Intent(ProfileActivity.this, RantActivity.class);
                     intent.putExtra("id",String.valueOf(menuItem.getId()));
                     startActivity(intent);

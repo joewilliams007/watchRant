@@ -6,22 +6,30 @@ import static com.dev.watchrant.RetrofitClient.BASE_URL;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.wear.remote.interactions.RemoteActivityHelper;
 import androidx.wear.widget.WearableLinearLayoutManager;
 import androidx.wear.widget.WearableRecyclerView;
 
+import com.dev.watchrant.auth.MyApplication;
 import com.dev.watchrant.databinding.ActivityRantBinding;
 import com.dev.watchrant.methods.MethodsImgRant;
 import com.dev.watchrant.methods.MethodsRant;
 import com.dev.watchrant.models.ModelImgRant;
 import com.dev.watchrant.models.ModelRant;
+import com.google.android.gms.wearable.NodeClient;
+import com.google.android.gms.wearable.Wearable;
+import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,6 +42,7 @@ private ActivityRantBinding binding;
     String id;
     ArrayList<RantItem> menuItems;
     String image_url = null;
+    String rant_url;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +73,7 @@ private ActivityRantBinding binding;
                     assert response.body() != null;
                     Rants rant = response.body().getRant();
                     String user_avatar = response.body().getRant().getUser_avatar().getI();
+                    rant_url = response.body().getRant().getLink();
                     List<Comment> comments = response.body().getComments();
                     //   toast("success: "+success+" size: "+rants.size());
 
@@ -139,6 +149,8 @@ private ActivityRantBinding binding;
             menuItems.add(new RantItem(null,comment.getUser_username()+" +"+comment.getUser_score(),0, "details",0,0));
             menuItems.add(new RantItem(null,s,comment.getUser_id(),"comment",comment.getScore(), 0));
         }
+
+        menuItems.add(new RantItem(null,"OPEN ON PHONE",0, "phone",0,0));
         build(menuItems);
     }
 
@@ -160,6 +172,8 @@ private ActivityRantBinding binding;
                     isImage = true;
                     Intent intent = new Intent(RantActivity.this, AvatarActivity.class);
                     startActivity(intent);
+                } else if (menuItem.getType().equals("phone")){
+                    openUrl("https://devrant.com/"+rant_url);
                 } else if (menuItem.getId() != 0) {
                     isImage = false;
                     Intent intent = new Intent(RantActivity.this, ProfileActivity.class);
@@ -168,14 +182,47 @@ private ActivityRantBinding binding;
                 } else if (menuItem.getType().equals("avatar")) {
                     Intent intent = new Intent(RantActivity.this, AvatarActivity.class);
                     startActivity(intent);
-                } else {
-
                 }
             }
         }));
     }
 
-    public void toast(String message) {
-        Toast.makeText(RantActivity.this, message, Toast.LENGTH_SHORT).show();
+    public static void toast(String message) {
+        Toast.makeText(MyApplication.getAppContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void openUrl(String url) {
+        Executor executor = new Executor() {
+            @Override
+            public void execute(Runnable runnable) {
+
+            }
+        };
+        RemoteActivityHelper remoteActivityHelper = new RemoteActivityHelper(MyApplication.getAppContext(), executor);
+
+        NodeClient client = Wearable.getNodeClient(MyApplication.getAppContext());
+        client.getConnectedNodes().addOnSuccessListener(nodes -> {
+            if (nodes.size() > 0) {
+                String nodeId = nodes.get(0).getId();
+                ListenableFuture<Void> result = remoteActivityHelper.startRemoteActivity(
+                        new Intent(Intent.ACTION_VIEW)
+                                .addCategory(Intent.CATEGORY_BROWSABLE)
+                                .setData(
+                                        Uri.parse(url)
+                                )
+                        , nodeId);
+                result.addListener(() -> {
+                    try {
+                        result.get();
+                    } catch (Exception e) {
+                        toast("Failed " + e);
+                    }
+                }, executor);
+            } else {
+                toast("no connected wear watch");
+            }
+        }).addOnFailureListener(failure -> {
+            toast("failed "+failure.getMessage());
+        });
     }
 }
