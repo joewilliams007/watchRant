@@ -135,9 +135,6 @@ private ActivityRantBinding binding;
 
         for (Comment comment : comments){
             String s = comment.getBody();
-            if (s.length()>100) {
-                s = s.substring(0, Math.min(s.length(), 100))+"...";
-            }
 
             menuItems.add(new RantItem(null,comment.getUser_username()+" +"+comment.getUser_score(),0, "details",0,0));
             menuItems.add(new RantItem(null,s,comment.getUser_id(),"comment",comment.getScore(), 0));
