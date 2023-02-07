@@ -38,6 +38,6 @@ Or download from here: https://github.com/joewilliams007/watchRant/blob/master/a
 
 4. Finally, select the apk and hit install.
 
-### Use adb wifi from your console to install the apk
+#### OR use adb wifi from your console to install the apk
 
-### You can build the project yourself and use adb wifi to connect to your watch
+#### OR You can build the project yourself and use adb wifi to connect to your watch
