@@ -3,7 +3,22 @@ A devRant client for your watch!
 
 Compatible with wear os minsdk 28.
 
-Tested and developed on Samnsung watch5.
+Tested and developed on Samsung watch5.
+
+## Features
+
+| Available |                Feature           |
+| :-----------: | :--------------------------------: |
+|       ✅       | feed (top/recent/algo)          |
+|       ✅       | rant (images supported)                   |
+|       ✅       | comments (images not supported)                        |
+|       ✅       | profile (about/website/.../rants)   |
+|       ✅       | update (checks for updates)   |
+|       ✅       | download (images/avatars)   |
+|       ✅       | search (rants/profiles)   |
+|       ✅       | open on phone   |
+
+More to come!
 
 ## Download
 
@@ -23,18 +38,3 @@ Finally, select the apk and hit install.
 2. Use adb wifi from your console to install the apk
 
 3. You can build the project yourself and use adb wifi to connect to your watch
-
-## Features
-
-| Available |                Feature           |
-| :-----------: | :--------------------------------: |
-|       ✅       | feed (top/recent/algo)          |
-|       ✅       | rant (images supported)                   |
-|       ✅       | comments (images not supported)                        |
-|       ✅       | profile (about/website/.../rants)   |
-|       ✅       | update (checks for updates)   |
-|       ✅       | download (images/avatars)   |
-|       ✅       | search (rants/profiles)   |
-|       ✅       | open on phone   |
-
-More to come!
