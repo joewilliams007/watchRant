@@ -7,6 +7,8 @@ Tested and developed on Samnsung watch 5.
 
 [Click to download apk](https://github.com/joewilliams007/watchRant/blob/master/app/release/app-release.apk?raw=true)
 
+Downloads from: https://github.com/joewilliams007/watchRant/blob/master/app/release/app-release.apk
+
 ## Features
 
 | Available |                Feature           |
