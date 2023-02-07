@@ -5,6 +5,8 @@ Compatible with wear os minsdk 28.
 
 Tested and developed on Samnsung watch 5.
 
+[Click to download apk](https://github.com/joewilliams007/watchrant/app-release.apk)
+
 ## Features
 
 | Available |                Feature           |
