@@ -30,9 +30,12 @@ Or download from here: https://github.com/joewilliams007/watchRant/blob/master/a
 
 1. Easy fire tools (no pc needed)
 
-Easy fire tools is an android app from the playstore and can connect to you watch.
+Easy fire tools is an android app from the playstore and can connect to your watch.
+
 Open the app, navigate to settings/ipAddress and add the ip of your watch, shown in your watches developer settings under debugging (example: 192.168.2.126).
+
 Then simply go to the main page and tap the plug icon to connect.
+
 Finally, select the apk and hit install.
 
 2. Use adb wifi from your console to install the apk
