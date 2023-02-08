@@ -12,11 +12,18 @@ Tested and developed on Samsung watch5.
 |       ✅       | feed (top/recent/algo)          |
 |       ✅       | rant (images supported)                   |
 |       ✅       | comments (images not supported)                        |
+|       ✅       | login / logout   |
+|       ✅       | comment (only text)   |
+|       ✅       | themes (dark/amoled) |
+|       ✅       | Animation of SIMMORSAL devRantNativeClient   |
+|       ✅       | disable animation   |
+|       ✅       | social media btns of devRant    |
 |       ✅       | profile (about/website/.../rants)   |
 |       ✅       | update (checks for updates)   |
 |       ✅       | download (images/avatars)   |
 |       ✅       | search (rants/profiles)   |
 |       ✅       | open on phone   |
+|       ✅       | credits   |
 
 More to come!
 
@@ -41,3 +48,12 @@ Or download from here: https://github.com/joewilliams007/watchRant/blob/master/a
 #### OR use adb wifi from your console to install the apk
 
 #### OR You can build the project yourself and use adb wifi to connect to your watch
+
+
+## Credit
+
+dfox & trogus for creating devRant
+
+SIMMORSAL for the most awesome animation
+
+Skayo & frogstair for providing api docs
