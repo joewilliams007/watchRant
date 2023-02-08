@@ -53,5 +53,7 @@ Or download from here: https://github.com/joewilliams007/watchRant/blob/master/a
 ## Credit
 
 dfox & trogus for creating devRant
+
 SIMMORSAL for the most awesome animation
+
 Skayo & frogstair for providing api docs
