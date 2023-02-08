@@ -3,4 +3,5 @@
     <color name="devDark">#393a52</color>
     <color name="devBlue">#41435b</color>
     <color name="devLight">#000000</color>
+    <color name="dark_normalBottomNavigationButton">#eee</color>
 </resources>

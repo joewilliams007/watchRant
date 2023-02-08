@@ -1,7 +1,9 @@
 package com.dev.watchrant;
 
-import android.annotation.SuppressLint;
+import static com.dev.watchrant.network.RetrofitClient.BASE_URL;
+
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,27 +14,35 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.dev.watchrant.auth.Account;
 import com.dev.watchrant.databinding.ActivityLoginBinding;
-import com.dev.watchrant.methods.MethodsLogin;
-import com.dev.watchrant.methods.MethodsUpdate;
 import com.dev.watchrant.models.ModelLogin;
-import com.dev.watchrant.models.ModelUpdate;
+import com.dev.watchrant.post.LoginClient;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends Activity {
 
     EditText editText;
     TextView textView;
     int tapped = 0;
-    String username;
-    String password;
+    String _username;
+    String _password;
     private ActivityLoginBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (Account.theme().equals("dark")) {
+            setTheme(R.style.Theme_Dark);
+        } else {
+            setTheme(R.style.Theme_Amoled);
+        }
         super.onCreate(savedInstanceState);
 
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
@@ -53,30 +63,90 @@ public class LoginActivity extends Activity {
             if (tapped == 0) {
                 toast("enter username");
             } else {
+                editText.setText("");
                 toast("enter password");
             }
             return;
         } else {
             if (tapped == 1) {
-                password = text;
+                _password = text;
+                editText.setText("");
                 login();
             } else {
                 tapped++;
+                editText.setText("");
                 editText.setHint("password");
                 textView.setText("submit password");
-                username = text;
+                _username = text;
             }
         
         }
     }
 
     private void login() {
-        MethodsLogin methods = RetrofitClient.getRetrofitInstance().create(MethodsLogin.class);
-        String total_url = "users/auth-token?app=3&username="+username+"&password="+password;
-
         ProgressBar progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
 
+
+        RequestBody app = RequestBody.create(MediaType.parse("application/x-form-urlencoded"), "3");
+        RequestBody username = RequestBody.create(MediaType.parse("application/x-form-urlencoded"), _username);
+        RequestBody password = RequestBody.create(MediaType.parse("application/x-form-urlencoded"), _password);
+
+        // Service
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl(BASE_URL) // SERVER IP
+                .addConverterFactory(GsonConverterFactory.create());
+        Retrofit retrofit = builder.build();
+
+        LoginClient client = retrofit.create(LoginClient.class);
+        // finally, execute the request
+
+        Call<ModelLogin> call = client.login(app,username,password);
+        call.enqueue(new Callback<ModelLogin>() {
+            @Override
+            public void onResponse(@NonNull Call<ModelLogin> call, @NonNull Response<ModelLogin> response) {
+                Log.v("Upload", response+" ");
+
+                if (response.isSuccessful()) {
+                    // Do awesome stuff
+                    assert response.body() != null;
+
+                    String key = response.body().getAuth_token().getKey();
+                    int id = response.body().getAuth_token().getId();
+                    int user_id = response.body().getAuth_token().getUser_id();
+                    int expire_time = response.body().getAuth_token().getExpire_time();
+
+                    Account.setKey(key);
+                    Account.setId(id);
+                    Account.setUser_id(user_id);
+                    Account.setExpire_time(expire_time);
+
+                    toast("you sir, are now logged in");
+
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else if (response.code() == 400) {
+                    toast("Invalid login credentials entered. Please try again. :(");
+                    editText.setHint("username");
+                    editText.setText("");
+                    textView.setText("submit username");
+                    progressBar.setVisibility(View.GONE);
+                    tapped = 0;
+                } else if (response.code() == 429) {
+                    // Handle unauthorized
+                    toast("You are not authorized :P");
+                } else {
+                    toast(response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ModelLogin> call, @NonNull Throwable t) {
+                toast("Request failed! "+t.getMessage());
+            }
+
+        });
     }
 
 }

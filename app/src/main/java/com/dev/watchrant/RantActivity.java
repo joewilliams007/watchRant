@@ -1,14 +1,15 @@
 package com.dev.watchrant;
 
 import static com.dev.watchrant.ProfileActivity.isImage;
-import static com.dev.watchrant.RetrofitClient.BASE_URL;
+
+import static com.dev.watchrant.ReplyActivity.uploaded_comment;
+import static com.dev.watchrant.network.RetrofitClient.BASE_URL;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,12 +18,18 @@ import androidx.wear.remote.interactions.RemoteActivityHelper;
 import androidx.wear.widget.WearableLinearLayoutManager;
 import androidx.wear.widget.WearableRecyclerView;
 
+import com.dev.watchrant.adapters.RantAdapter;
+import com.dev.watchrant.adapters.RantItem;
+import com.dev.watchrant.auth.Account;
 import com.dev.watchrant.auth.MyApplication;
+import com.dev.watchrant.classes.Comment;
+import com.dev.watchrant.classes.Rants;
 import com.dev.watchrant.databinding.ActivityRantBinding;
 import com.dev.watchrant.methods.MethodsImgRant;
 import com.dev.watchrant.methods.MethodsRant;
 import com.dev.watchrant.models.ModelImgRant;
 import com.dev.watchrant.models.ModelRant;
+import com.dev.watchrant.network.RetrofitClient;
 import com.google.android.gms.wearable.NodeClient;
 import com.google.android.gms.wearable.Wearable;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -43,8 +50,14 @@ private ActivityRantBinding binding;
     ArrayList<RantItem> menuItems;
     String image_url = null;
     String rant_url;
+    public static ArrayList<String> users_of_comments = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (Account.theme().equals("dark")) {
+            setTheme(R.style.Theme_Dark);
+        } else {
+            setTheme(R.style.Theme_Amoled);
+        }
         super.onCreate(savedInstanceState);
 
          binding = ActivityRantBinding.inflate(getLayoutInflater());
@@ -140,16 +153,29 @@ private ActivityRantBinding binding;
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (uploaded_comment) {
+            menuItems = new ArrayList<>();
+            requestImage();
+            requestComments();
+            uploaded_comment = false;
+        }
+    }
+
     public void createFeedList(List<Comment> comments, ArrayList<RantItem> menuItems){
-
-
         for (Comment comment : comments){
             String s = comment.getBody();
+
+            if (!users_of_comments.contains(comment.getUser_username())) {
+                users_of_comments.add(comment.getUser_username());
+            }
 
             menuItems.add(new RantItem(null,comment.getUser_username()+" +"+comment.getUser_score(),0, "details",0,0));
             menuItems.add(new RantItem(null,s,comment.getUser_id(),"comment",comment.getScore(), 0));
         }
-
+        menuItems.add(new RantItem(null,"REPLY",0, "reply",0,0));
         menuItems.add(new RantItem(null,"OPEN ON PHONE",0, "phone",0,0));
         build(menuItems);
     }
@@ -181,6 +207,10 @@ private ActivityRantBinding binding;
                     startActivity(intent);
                 } else if (menuItem.getType().equals("avatar")) {
                     Intent intent = new Intent(RantActivity.this, AvatarActivity.class);
+                    startActivity(intent);
+                } else if (menuItem.getType().equals("reply")) {
+                    Intent intent = new Intent(RantActivity.this, ReplyActivity.class);
+                    intent.putExtra("id", String.valueOf(id));
                     startActivity(intent);
                 }
             }

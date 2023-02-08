@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/box_inset_layout_padding"
-    android:background="@color/devDark"
+    android:background="?attr/colorSurface"
     tools:context=".OptionActivity"
     tools:deviceIds="wear">
 
@@ -20,9 +20,8 @@
     <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyle"
-        android:indeterminateTint="@color/devBlue"
+        android:indeterminateTint="@color/dark_normalBottomNavigationButton"
         android:indeterminate="true"
-        app:layout_boxedEdges="all"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

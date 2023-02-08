@@ -8,18 +8,8 @@
     android:padding="@dimen/box_inset_layout_padding"
     android:id="@+id/swipeFeed"
     tools:context=".MainActivity"
-    android:background="@color/devDark"
+    android:background="?attr/colorSurface"
     tools:deviceIds="wear">
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:indeterminateTint="@color/devBlue"
-        android:indeterminate="true"
-        app:layout_boxedEdges="all"
-        android:visibility="gone"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
     <androidx.wear.widget.WearableRecyclerView
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -30,4 +20,114 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:scrollbars="vertical" />
+
+    <RelativeLayout
+        android:id="@+id/relContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:src="@drawable/rants"
+            android:layout_alignParentBottom="true"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            app:tint="@color/dark_normalBottomNavigationButton" />
+        <ImageView
+            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
+            android:src="@drawable/rants"
+            android:layout_alignParentBottom="true"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            app:tint="@color/dark_normalBottomNavigationButton" />
+        <ImageView
+            android:layout_marginLeft="60dp"
+            android:layout_marginStart="60dp"
+            android:src="@drawable/rants"
+            android:layout_alignParentBottom="true"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            app:tint="@color/dark_normalBottomNavigationButton" />
+        <ImageView
+            android:layout_marginLeft="90dp"
+            android:layout_marginStart="90dp"
+            android:src="@drawable/rants"
+            android:layout_alignParentBottom="true"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            app:tint="@color/dark_normalBottomNavigationButton" />
+        <ImageView
+            android:layout_marginLeft="120dp"
+            android:layout_marginStart="120dp"
+            android:src="@drawable/rants"
+            android:layout_alignParentBottom="true"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            app:tint="@color/dark_normalBottomNavigationButton" />
+        <ImageView
+            android:layout_marginLeft="150dp"
+            android:layout_marginStart="150dp"
+            android:src="@drawable/rants"
+            android:layout_alignParentBottom="true"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            app:tint="@color/dark_normalBottomNavigationButton" />
+        <ImageView
+            android:layout_marginLeft="180dp"
+            android:layout_marginStart="180dp"
+            android:src="@drawable/rants"
+            android:layout_alignParentBottom="true"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            app:tint="@color/dark_normalBottomNavigationButton" />
+        <ImageView
+            android:layout_marginLeft="210dp"
+            android:layout_marginStart="210dp"
+            android:src="@drawable/rants"
+            android:layout_alignParentBottom="true"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            app:tint="@color/dark_normalBottomNavigationButton" />
+        <ImageView
+            android:layout_marginLeft="240dp"
+            android:layout_marginStart="240dp"
+            android:src="@drawable/rants"
+            android:layout_alignParentBottom="true"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            app:tint="@color/dark_normalBottomNavigationButton" />
+        <ImageView
+            android:layout_marginLeft="270dp"
+            android:layout_marginStart="270dp"
+            android:src="@drawable/rants"
+            android:layout_alignParentBottom="true"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            app:tint="@color/dark_normalBottomNavigationButton" />
+        <ImageView
+            android:layout_marginLeft="300dp"
+            android:layout_marginStart="300dp"
+            android:src="@drawable/rants"
+            android:layout_alignParentBottom="true"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            app:tint="@color/dark_normalBottomNavigationButton" />
+        <ImageView
+            android:layout_marginLeft="330dp"
+            android:layout_marginStart="330dp"
+            android:src="@drawable/rants"
+            android:layout_alignParentBottom="true"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            app:tint="@color/dark_normalBottomNavigationButton" />
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:indeterminateTint="@color/dark_normalBottomNavigationButton"
+        android:indeterminate="true"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </androidx.wear.widget.SwipeDismissFrameLayout>

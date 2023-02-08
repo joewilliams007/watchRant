@@ -1,38 +1,37 @@
 package com.dev.watchrant;
 
 import static com.dev.watchrant.MainActivity.sort;
-import static com.dev.watchrant.RetrofitClient.BASE_URL;
+import static com.dev.watchrant.RantActivity.openUrl;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Path;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.wear.activity.ConfirmationActivity;
 import androidx.wear.remote.interactions.RemoteActivityHelper;
-import androidx.wear.widget.ConfirmationOverlay;
 import androidx.wear.widget.WearableLinearLayoutManager;
 import androidx.wear.widget.WearableRecyclerView;
 
+import com.dev.watchrant.adapters.OptionsAdapter;
+import com.dev.watchrant.adapters.OptionsItem;
+import com.dev.watchrant.auth.Account;
 import com.dev.watchrant.databinding.ActivityOptionBinding;
-import com.dev.watchrant.methods.MethodsSearch;
 import com.dev.watchrant.methods.MethodsUpdate;
-import com.dev.watchrant.models.ModelSearch;
 import com.dev.watchrant.models.ModelUpdate;
+import com.dev.watchrant.network.RetrofitClient;
 import com.google.android.gms.wearable.NodeClient;
 import com.google.android.gms.wearable.Wearable;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 
@@ -46,6 +45,11 @@ public class OptionActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (Account.theme().equals("dark")) {
+            setTheme(R.style.Theme_Dark);
+        } else {
+            setTheme(R.style.Theme_Amoled);
+        }
         super.onCreate(savedInstanceState);
 
         binding = ActivityOptionBinding.inflate(getLayoutInflater());
@@ -56,21 +60,40 @@ public class OptionActivity extends Activity {
 
     public void createFeedList(){
         ArrayList<OptionsItem> menuItems = new ArrayList<>();
-        menuItems.add(new OptionsItem(null,"feed",1));
+        menuItems.add(new OptionsItem(null,"- feed -",1));
         menuItems.add(new OptionsItem(null,"TOP",0));
         menuItems.add(new OptionsItem(null,"RECENT",0));
         menuItems.add(new OptionsItem(null,"ALGO",0));
-        menuItems.add(new OptionsItem(null,"other",1));
+        menuItems.add(new OptionsItem(null,"- other -",1));
         menuItems.add(new OptionsItem(null,"SEARCH",0));
-        menuItems.add(new OptionsItem(null,"settings",1));
-        // Coming soon! menuItems.add(new OptionsItem(null,"MY PROFILE",0));
-        // Coming soon! menuItems.add(new OptionsItem(null,"LOGIN",0));
+        menuItems.add(new OptionsItem(null,"- settings -",1));
+        menuItems.add(new OptionsItem(null,"MY PROFILE",0));
+
+        if (Account.isLoggedIn()) {
+            menuItems.add(new OptionsItem(null,"LOGOUT",0));
+        } else {
+            menuItems.add(new OptionsItem(null,"LOGIN",0));
+        }
+        menuItems.add(new OptionsItem(null,"THEME",0));
+        menuItems.add(new OptionsItem(null,"ANIMATION",0));
         String versionName = BuildConfig.VERSION_NAME;
         menuItems.add(new OptionsItem(null,"VERSION "+versionName,0));
         menuItems.add(new OptionsItem(null,"UPDATE",0));
-        menuItems.add(new OptionsItem(null,"information",1));
+        menuItems.add(new OptionsItem(null,"- information -",1));
         menuItems.add(new OptionsItem(null,"tip: if you want OPEN ON PHONE to open in devRant go to:\n\nphone/settings/apps/devRant/setAsDefault/webAddresses\n\nand enable all",1));
         menuItems.add(new OptionsItem(null,"the update btn uses a github template api",1));
+
+        menuItems.add(new OptionsItem(null,"CARTOONS",3));
+        menuItems.add(new OptionsItem(null,"PODCASTS",3));
+        menuItems.add(new OptionsItem(null,"TWITTER",3));
+        menuItems.add(new OptionsItem(null,"FACEBOOK",3));
+        menuItems.add(new OptionsItem(null,"ISSUE TRACKER",3));
+
+        menuItems.add(new OptionsItem(null,"- credit -",1));
+        menuItems.add(new OptionsItem(null,"Huge thanks to:",1));
+        menuItems.add(new OptionsItem(null,"dfox & trogus\n(devRant team)",1));
+        menuItems.add(new OptionsItem(null,"SIMMORSAL\n(rant animation)",1));
+        menuItems.add(new OptionsItem(null,"Skayo & frogstair\n(api docs)",1));
         build(menuItems);
     }
 
@@ -107,6 +130,57 @@ public class OptionActivity extends Activity {
                         intent = new Intent(OptionActivity.this, LoginActivity.class);
                         startActivity(intent);
                         break;
+                    case "LOGOUT":
+                        logout();
+                        break;
+                    case "MY PROFILE":
+                        if (Account.isLoggedIn()) {
+                            intent = new Intent(OptionActivity.this, ProfileActivity.class);
+                            intent.putExtra("id", String.valueOf(Account.user_id()));
+                            startActivity(intent);
+                        } else {
+                            toast("please login first");
+                        }
+                        break;
+                    case "THEME":
+                        if (Account.theme().equals("dark")) {
+                            Account.setTheme("amoled");
+                        } else {
+                            Account.setTheme("dark");
+                        }
+                        intent = new Intent(OptionActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                        break;
+                    case "ANIMATION":
+                        if (Account.animate()) {
+                            Account.setAnimate(false);
+                            toast("animation disabled");
+                        } else {
+                            Account.setAnimate(true);
+                            toast("animation enabled");
+                        }
+                        break;
+                    case "CARTOONS":
+                        toast("check phone");
+                        openUrl("https://www.youtube.com/devrantapp");
+                        break;
+                    case "PODCASTS":
+                        toast("check phone");
+                        openUrl("https://soundcloud.com/devrantapp");
+                        break;
+                    case "TWITTER":
+                        toast("check phone");
+                        openUrl("https://twitter.com/devrantapp/");
+                        break;
+                    case "FACEBOOK":
+                        toast("check phone");
+                        openUrl("https://www.facebook.com/devrantapp/");
+                        break;
+                    case "ISSUE TRACKER":
+                        toast("check phone");
+                        openUrl("https://github.com/joewilliams007/watchRant");
+                        break;
                 }
                 if (menuItem.getText().contains("VERSION")) {
                     int versionCode = BuildConfig.VERSION_CODE;
@@ -116,6 +190,40 @@ public class OptionActivity extends Activity {
 
             }
         }));
+    }
+
+    private void logout() {
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(this)
+                .setTitle("logout")
+                .setMessage("U sure u want to logout :(")
+                .setCancelable(true)
+
+                .setPositiveButton(
+                "Yes",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+
+                        Account.setKey(null);
+                        Account.setExpire_time(0);
+                        Account.setUser_id(0);
+                        Account.setId(0);
+
+                        toast("logged out");
+                        createFeedList();
+                    }
+                })
+
+                .setNegativeButton(
+                "No",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+
+        AlertDialog alert = builder1.create();
+        alert.show();
     }
 
 
@@ -148,32 +256,7 @@ public class OptionActivity extends Activity {
 
                             }
                         };
-                        RemoteActivityHelper remoteActivityHelper = new RemoteActivityHelper(OptionActivity.this, executor);
-
-                        NodeClient client = Wearable.getNodeClient(OptionActivity.this);
-                        client.getConnectedNodes().addOnSuccessListener(nodes -> {
-                            if (nodes.size() > 0) {
-                                String nodeId = nodes.get(0).getId();
-                                ListenableFuture<Void> result = remoteActivityHelper.startRemoteActivity(
-                                        new Intent(Intent.ACTION_VIEW)
-                                                .addCategory(Intent.CATEGORY_BROWSABLE)
-                                                .setData(
-                                                        Uri.parse("https://github.com/joewilliams007/watchRant")
-                                                )
-                                        , nodeId);
-                                result.addListener(() -> {
-                                    try {
-                                        result.get();
-                                    } catch (Exception e) {
-                                        toast("Failed " + e);
-                                    }
-                                }, executor);
-                            } else {
-                                toast("no connected wear watch");
-                            }
-                        }).addOnFailureListener(failure -> {
-                            toast("failed "+failure.getMessage());
-                        });
+                       openUrl("");
                     } else {
                         toast("You have the latest version!");
                     }

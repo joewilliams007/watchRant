@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:padding="@dimen/box_inset_layout_padding"
     tools:context=".ProfileActivity"
-    android:background="@color/devDark"
+    android:background="?attr/colorSurface"
     tools:deviceIds="wear">
 
     <androidx.wear.widget.WearableRecyclerView

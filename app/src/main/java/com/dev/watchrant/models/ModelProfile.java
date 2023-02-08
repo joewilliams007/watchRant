@@ -1,9 +1,6 @@
 package com.dev.watchrant.models;
 
-import com.dev.watchrant.Profile;
-import com.dev.watchrant.Rants;
-
-import java.util.List;
+import com.dev.watchrant.classes.Profile;
 
 // works for register & login
 public class ModelProfile {

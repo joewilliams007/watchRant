@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:padding="50dp"
     tools:context=".SearchActivity"
-    android:background="@color/devDark"
+    android:background="?attr/colorSurface"
     tools:deviceIds="wear">
 
     <EditText

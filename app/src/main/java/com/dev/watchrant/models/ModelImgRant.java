@@ -1,8 +1,7 @@
 package com.dev.watchrant.models;
 
-import com.dev.watchrant.Comment;
-import com.dev.watchrant.ImgRant;
-import com.dev.watchrant.Rants;
+import com.dev.watchrant.classes.Comment;
+import com.dev.watchrant.classes.ImgRant;
 
 import java.util.List;
 

@@ -13,10 +13,13 @@ import android.os.Environment;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.dev.watchrant.auth.Account;
+import com.dev.watchrant.auth.MyApplication;
 import com.dev.watchrant.databinding.ActivityAvatarBinding;
+import com.dev.watchrant.network.DownloadImageTask;
 
 public class AvatarActivity extends Activity {
 
@@ -25,6 +28,11 @@ public class AvatarActivity extends Activity {
     int tapped = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (Account.theme().equals("dark")) {
+            setTheme(R.style.Theme_Dark);
+        } else {
+            setTheme(R.style.Theme_Amoled);
+        }
         super.onCreate(savedInstanceState);
 
         binding = ActivityAvatarBinding.inflate(getLayoutInflater());
@@ -36,8 +44,7 @@ public class AvatarActivity extends Activity {
             new DownloadImageTask(imageView)
                     .execute(rant_image);
         } else {
-            new DownloadImageTask(imageView)
-                    .execute("https://avatars.devrant.com/"+profile_avatar);
+            Glide.with(MyApplication.getAppContext()).load("https://avatars.devrant.com/"+profile_avatar).into(imageView);
         }
 
         ProgressBar progressBar = findViewById(R.id.progressBar);

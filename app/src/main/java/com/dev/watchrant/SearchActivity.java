@@ -1,6 +1,6 @@
 package com.dev.watchrant;
 
-import static com.dev.watchrant.RetrofitClient.BASE_URL;
+import static com.dev.watchrant.network.RetrofitClient.BASE_URL;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -8,19 +8,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EdgeEffect;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.dev.watchrant.auth.Account;
+import com.dev.watchrant.classes.Rants;
 import com.dev.watchrant.databinding.ActivitySearchBinding;
-import com.dev.watchrant.methods.MethodsFeed;
 import com.dev.watchrant.methods.MethodsSearch;
-import com.dev.watchrant.models.ModelFeed;
 import com.dev.watchrant.models.ModelSearch;
+import com.dev.watchrant.network.RetrofitClient;
 
 import java.util.List;
 
@@ -35,6 +34,11 @@ public class SearchActivity extends Activity {
     public static List<Rants> search_rants;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        if (Account.theme().equals("dark")) {
+            setTheme(R.style.Theme_Dark);
+        } else {
+            setTheme(R.style.Theme_Amoled);
+        }
         super.onCreate(savedInstanceState);
 
         binding = ActivitySearchBinding.inflate(getLayoutInflater());

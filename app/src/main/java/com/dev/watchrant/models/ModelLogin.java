@@ -1,11 +1,8 @@
 package com.dev.watchrant.models;
 
-import com.dev.watchrant.Auth_token;
-import com.dev.watchrant.Rants;
+import com.dev.watchrant.classes.Auth_token;
 
-import java.util.List;
 
-// works for register & login
 public class ModelLogin {
     Boolean success;
     Auth_token auth_token;

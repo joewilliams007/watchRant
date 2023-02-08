@@ -53,4 +53,6 @@
     <string name="title_activity_option">OptionActivity</string>
     <string name="title_activity_search">SearchActivity</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="title_activity_reply">ReplyActivity</string>
 </resources>

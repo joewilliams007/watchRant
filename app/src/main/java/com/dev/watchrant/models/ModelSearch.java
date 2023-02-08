@@ -1,6 +1,6 @@
 package com.dev.watchrant.models;
 
-import com.dev.watchrant.Rants;
+import com.dev.watchrant.classes.Rants;
 
 import java.util.List;
 

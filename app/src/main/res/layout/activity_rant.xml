@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".RantActivity"
     tools:deviceIds="wear"
-    android:background="@color/devDark"
+    android:background="?attr/colorSurface"
     android:padding="@dimen/box_inset_layout_padding">
 
     <androidx.wear.widget.WearableRecyclerView
