@@ -1,5 +1,14 @@
 package com.dev.watchrant.classes;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+
+import java.lang.reflect.Type;
+
 public class Rants {
     int id;
     int score;
@@ -17,7 +26,7 @@ public class Rants {
     int user_score;
     int user_id;
     User_avatar user_avatar;
-
+    Object attached_image;
     public User_avatar getUser_avatar() {
         return user_avatar;
     }
@@ -57,4 +66,10 @@ public class Rants {
     public int getUser_id() {
         return user_id;
     }
+
+
+    public Object getAttached_image() {
+        return attached_image;
+    }
+
 }

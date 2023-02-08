@@ -6,10 +6,10 @@
         <!-- Primary brand color. -->
         <item name="colorPrimary">#000000</item>
         <item name="colorPrimaryVariant">#000000</item>
-        <item name="colorOnPrimary">#282828</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">#000000</item>
-        <item name="colorSecondaryVariant">#FFFFFF</item>
+        <item name="colorSecondaryVariant">#000000</item>
         <item name="colorOnSecondary">#000000</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">#000000</item>

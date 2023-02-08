@@ -73,9 +73,11 @@ public class OptionActivity extends Activity {
             menuItems.add(new OptionsItem(null,"LOGOUT",0));
         } else {
             menuItems.add(new OptionsItem(null,"LOGIN",0));
+            menuItems.add(new OptionsItem(null,"REGISTER",0));
         }
         menuItems.add(new OptionsItem(null,"THEME",0));
         menuItems.add(new OptionsItem(null,"ANIMATION",0));
+        menuItems.add(new OptionsItem(null,"LIMIT",0));
         String versionName = BuildConfig.VERSION_NAME;
         menuItems.add(new OptionsItem(null,"VERSION "+versionName,0));
         menuItems.add(new OptionsItem(null,"UPDATE",0));
@@ -180,6 +182,25 @@ public class OptionActivity extends Activity {
                     case "ISSUE TRACKER":
                         toast("check phone");
                         openUrl("https://github.com/joewilliams007/watchRant");
+                        break;
+                    case "REGISTER":
+                        toast("check phone");
+                        openUrl("https://devrant.com/feed/top/month?signup=1");
+                        break;
+                    case "LIMIT":
+                        if (Account.limit() == 10) {
+                            Account.setLimit(20);
+                        } else if (Account.limit() == 20) {
+                            Account.setLimit(30);
+                        } else if (Account.limit() == 30) {
+                            Account.setLimit(40);
+                        } else if (Account.limit() == 40) {
+                            Account.setLimit(50);
+                        } else {
+                            Account.setLimit(10);
+                        }
+
+                        toast(Account.limit()+" rants");
                         break;
                 }
                 if (menuItem.getText().contains("VERSION")) {

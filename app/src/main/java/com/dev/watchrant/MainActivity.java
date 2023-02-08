@@ -26,6 +26,7 @@ import com.dev.watchrant.adapters.RantItem;
 import com.dev.watchrant.animations.RantLoadingAnimation;
 import com.dev.watchrant.auth.Account;
 import com.dev.watchrant.classes.Rants;
+import com.dev.watchrant.classes.attached_image;
 import com.dev.watchrant.databinding.ActivityMainBinding;
 import com.dev.watchrant.methods.MethodsFeed;
 import com.dev.watchrant.models.ModelFeed;
@@ -112,7 +113,7 @@ public class MainActivity extends Activity {
 
     private void startReq() {
         MethodsFeed methods = RetrofitClient.getRetrofitInstance().create(MethodsFeed.class);
-        String total_url = BASE_URL + "devrant/rants?app=3&limit=50&sort="+sort+"&range=day&skip=0/";
+        String total_url = BASE_URL + "devrant/rants?app=3&limit="+Account.limit()+"&sort="+sort+"&range=day&skip=0/";
 
 
         Call<ModelFeed> call = methods.getAllData(total_url);
@@ -162,7 +163,13 @@ public class MainActivity extends Activity {
                 s = s.substring(0, Math.min(s.length(), 100))+"...";
             }
 
-            menuItems.add(new RantItem(null,s,rant.getId(),"feed",rant.getScore(), rant.getNum_comments()));
+            if (rant.getAttached_image().toString().contains("http")) {
+                menuItems.add(new RantItem(null,s,rant.getId(),"feed",rant.getScore(), rant.getNum_comments()));
+                menuItems.add(new RantItem(null,s,rant.getId(),"image",rant.getScore(), rant.getNum_comments()));
+            } else {
+                menuItems.add(new RantItem(null,s,rant.getId(),"feed",rant.getScore(), rant.getNum_comments()));
+            }
+
         }
         build(menuItems);
     }

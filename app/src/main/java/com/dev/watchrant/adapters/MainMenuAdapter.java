@@ -64,7 +64,7 @@ public class MainMenuAdapter extends WearableRecyclerView.Adapter<MainMenuAdapte
     public void onBindViewHolder(RecyclerViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         RantItem data_provider = dataSource.get(position);
 
-
+        holder.setIsRecyclable(false);
 
         switch (data_provider.getType()) {
             case "avatar":
@@ -101,6 +101,15 @@ public class MainMenuAdapter extends WearableRecyclerView.Adapter<MainMenuAdapte
                 } else {
                     holder.detailsItem.setText("+" + data_provider.getScore() + " comnts: " + data_provider.getNumComments());
                 }
+                break;
+            case "image":
+                holder.menuItem.setVisibility(View.VISIBLE);
+                holder.menuIcon.setVisibility(View.GONE);
+                holder.menuItem.setText("VIEW IMAGE");
+                holder.detailsItem.setVisibility(View.GONE);
+                holder.menuItem.setVisibility(View.VISIBLE);
+                holder.menuItem.setGravity(Gravity.CENTER);
+                holder.menuItem.setBackground(null);
                 break;
             case "comment":
             case "rant":

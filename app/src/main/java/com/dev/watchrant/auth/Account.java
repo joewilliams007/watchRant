@@ -75,4 +75,15 @@ public class Account {
         SharedPreferences.Editor editor = preferences.edit().putBoolean("animate",animate);
         editor.apply();
     }
+
+    public static int limit() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getAppContext());
+        return preferences.getInt("limit", 50);
+    }
+
+    public static void setLimit(int limit) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getAppContext());
+        SharedPreferences.Editor editor = preferences.edit().putInt("limit",limit);
+        editor.apply();
+    }
 }

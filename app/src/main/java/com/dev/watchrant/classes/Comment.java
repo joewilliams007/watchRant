@@ -10,6 +10,11 @@ public class Comment {
     int user_id;
     String user_username;
     int user_score;
+    Object attached_image;
+
+    public Object getAttached_image() {
+        return attached_image;
+    }
 
     public int getId() {
         return id;
