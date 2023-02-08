@@ -12,11 +12,16 @@ Tested and developed on Samsung watch5.
 |       ✅       | feed (top/recent/algo)          |
 |       ✅       | rant (images supported)                   |
 |       ✅       | comments (images not supported)                        |
+|       ✅       | login / logout   |
+|       ✅       | Animation of SIMMORSAL devRantNativeClient   |
+|       ✅       | disable animation   |
+|       ✅       | social media btns of devRant    |
 |       ✅       | profile (about/website/.../rants)   |
 |       ✅       | update (checks for updates)   |
 |       ✅       | download (images/avatars)   |
 |       ✅       | search (rants/profiles)   |
 |       ✅       | open on phone   |
+|       ✅       | credits   |
 
 More to come!
 
