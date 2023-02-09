@@ -41,6 +41,7 @@ import retrofit2.Response;
 
 public class MainActivity extends Activity {
     public static String sort = "recent";
+    int notif_amount;
     RantLoadingAnimation rantLoadingAnimation;
     ProgressBar progressBar;
     View view;
@@ -113,7 +114,17 @@ public class MainActivity extends Activity {
 
     private void startReq() {
         MethodsFeed methods = RetrofitClient.getRetrofitInstance().create(MethodsFeed.class);
-        String total_url = BASE_URL + "devrant/rants?app=3&limit="+Account.limit()+"&sort="+sort+"&range=day&skip=0/";
+        String total_url;
+        if (Account.isLoggedIn()) {
+            total_url = BASE_URL
+                    + "devrant/rants?"+"token_id="+Account.id()+"&token_key="+Account.key()+"&user_id="+Account.user_id()+"&app=3&limit="+Account.limit()+"&sort="+sort+"&range=all&skip=0"
+                    +"/";
+
+        } else {
+            total_url = BASE_URL
+                    + "devrant/rants?app=3&limit="+Account.limit()+"&sort="+sort+"&range=all&skip=0/";
+        }
+
 
 
         Call<ModelFeed> call = methods.getAllData(total_url);
@@ -128,7 +139,9 @@ public class MainActivity extends Activity {
                     Boolean success = response.body().getSuccess();
                     List<Rants> rants = response.body().getRants();
                     //   toast("success: "+success+" size: "+rants.size());
-
+                    if (Account.isLoggedIn()) {
+                        notif_amount = response.body().getUnread().getTotal();
+                    }
                     createFeedList(rants);
                 } else if (response.code() == 429) {
                     // Handle unauthorized
@@ -157,6 +170,10 @@ public class MainActivity extends Activity {
     public void createFeedList(List<Rants> rants){
         ArrayList<RantItem> menuItems = new ArrayList<>();
         menuItems.add(new RantItem(null,"devRant",0,"avatar",0,0));
+        if (Account.isLoggedIn()) {
+            menuItems.add(new RantItem(null,null,0,"notif",notif_amount, 0));
+        }
+
         for (Rants rant : rants){
             String s = rant.getText();
             if (s.length()>100) {
@@ -197,6 +214,9 @@ public class MainActivity extends Activity {
                         toast("recent feed");
                         requestFeed();
                     }
+                } else if (menuItem.getType().equals("notif")) {
+                    Intent intent = new Intent(MainActivity.this, NotifActivity.class);
+                    startActivity(intent);
                 } else {
                     Intent intent = new Intent(MainActivity.this, RantActivity.class);
                     intent.putExtra("id",String.valueOf(menuItem.getId()));

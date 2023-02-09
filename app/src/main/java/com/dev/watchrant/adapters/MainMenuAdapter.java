@@ -111,6 +111,15 @@ public class MainMenuAdapter extends WearableRecyclerView.Adapter<MainMenuAdapte
                 holder.menuItem.setGravity(Gravity.CENTER);
                 holder.menuItem.setBackground(null);
                 break;
+            case "notif":
+                holder.menuItem.setVisibility(View.VISIBLE);
+                holder.menuIcon.setVisibility(View.GONE);
+                holder.menuItem.setText(data_provider.getScore()+" notifs");
+                holder.detailsItem.setVisibility(View.GONE);
+                holder.menuItem.setVisibility(View.VISIBLE);
+                holder.menuItem.setGravity(Gravity.CENTER);
+                holder.menuItem.setBackground(null);
+                break;
             case "comment":
             case "rant":
                 holder.menuItem.setVisibility(View.VISIBLE);

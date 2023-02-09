@@ -71,8 +71,12 @@ private ActivityRantBinding binding;
 
     private void requestComments() {
         MethodsRant methods = RetrofitClient.getRetrofitInstance().create(MethodsRant.class);
-        String total_url = BASE_URL + "devrant/rants/"+id+"?app=3";
-
+        String total_url;
+        if (Account.isLoggedIn()) {
+            total_url = BASE_URL + "devrant/rants/"+id+"?app=3&token_id="+Account.id()+"&token_key="+Account.key()+"&user_id="+Account.user_id();
+        } else {
+            total_url = BASE_URL + "devrant/rants/"+id+"?app=3";
+        }
         Call<ModelRant> call = methods.getAllData(total_url);
         call.enqueue(new Callback<ModelRant>() {
             @SuppressLint("SetTextI18n")
