@@ -10,13 +10,14 @@ Tested and developed on Samsung watch5.
 | Available |                Feature           |
 | :-----------: | :--------------------------------: |
 |       ✅       | feed (top/recent/algo)          |
-|       ✅       | rant (images supported)                   |
-|       ✅       | comments (images not supported)                        |
+|       ✅       | rant (images supported)                  |
+|       ✅       | comments (images supported)                        |
 |       ✅       | login / logout   |
 |       ✅       | comment (only text)   |
 |       ✅       | themes (dark/amoled) |
 |       ✅       | Animation of SIMMORSAL devRantNativeClient   |
 |       ✅       | disable animation   |
+|       ✅       | set rant limit 10-50  |
 |       ✅       | social media btns of devRant    |
 |       ✅       | profile (about/website/.../rants)   |
 |       ✅       | update (checks for updates)   |
