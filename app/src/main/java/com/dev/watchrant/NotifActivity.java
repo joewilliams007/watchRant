@@ -35,6 +35,7 @@ import com.dev.watchrant.network.RetrofitClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -79,8 +80,8 @@ public class NotifActivity extends Activity {
                     Boolean success = response.body().getSuccess();
                     List<NotifItems> items = response.body().getData().getItems();
                     NotifUnread unread = response.body().getData().getUnread();
-
-                    createFeedList(items, unread);
+                    Map<Integer, String> username_map = response.body().getData().getUsername_map();
+                    createFeedList(items, unread, username_map);
                 } else if (response.code() == 429) {
                     // Handle unauthorized
                     toast(response.message());
@@ -100,7 +101,7 @@ public class NotifActivity extends Activity {
     }
 
 
-    public void createFeedList(List<NotifItems> items, NotifUnread unread){
+    public void createFeedList(List<NotifItems> items, NotifUnread unread, Map<Integer, String> username_map){
         ArrayList<NotifItem> menuItems = new ArrayList<>();
 
         int all = unread.getAll();
@@ -118,7 +119,8 @@ public class NotifActivity extends Activity {
                 +"\nsubs "+subs));
 
         for (NotifItems item : items){
-            menuItems.add(new NotifItem(item.getCreated_time(),item.getType(),item.getRead(),item.getRant_id(),item.getUid(),null));
+
+            menuItems.add(new NotifItem(item.getCreated_time()* 1000L,item.getType(),item.getRead(),item.getRant_id(),item.getUid(),username_map.get(item.getUid())));
         }
         build(menuItems);
     }
@@ -135,9 +137,11 @@ public class NotifActivity extends Activity {
             @Override
             public void onItemClicked(final Integer menuPosition) {
                 NotifItem menuItem = menuItems.get(menuPosition);
-                Intent intent = new Intent(NotifActivity.this, RantActivity.class);
-                intent.putExtra("id",String.valueOf(menuItem.getRant_id()));
-                startActivity(intent);
+                if (!menuItem.getType().equals("all")) {
+                    Intent intent = new Intent(NotifActivity.this, RantActivity.class);
+                    intent.putExtra("id",String.valueOf(menuItem.getRant_id()));
+                    startActivity(intent);
+                }
             }
         }));
     }

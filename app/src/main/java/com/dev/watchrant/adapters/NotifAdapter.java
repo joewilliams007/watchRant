@@ -1,9 +1,17 @@
 package com.dev.watchrant.adapters;
 
+import static android.text.format.DateUtils.getRelativeTimeSpanString;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +19,22 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.wear.widget.WearableRecyclerView;
 
+import com.dev.watchrant.ProfileActivity;
 import com.dev.watchrant.R;
+import com.dev.watchrant.RantActivity;
+import com.dev.watchrant.auth.MyApplication;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class NotifAdapter extends WearableRecyclerView.Adapter<NotifAdapter.RecyclerViewHolder> {
 
@@ -62,6 +79,7 @@ public class NotifAdapter extends WearableRecyclerView.Adapter<NotifAdapter.Recy
         };
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(RecyclerViewHolder holder, @SuppressLint("RecyclerView") final int position) {
         NotifItem data_provider = dataSource.get(position);
@@ -74,25 +92,26 @@ public class NotifAdapter extends WearableRecyclerView.Adapter<NotifAdapter.Recy
                 holder.menuItem.setBackground(null);
                 break;
             case "comment_vote":
-                holder.menuItem.setText("++ on your comment");
+                holder.menuItem.setText(data_provider.getUsername()+" ++'d your comment!\n"+getRelativeTimeSpanString(data_provider.getCreated_time()));
                 break;
             case "comment_content":
-                holder.menuItem.setText("comment on your rant");
+                holder.menuItem.setText(data_provider.getUsername()+" commented on your rant!\n"+getRelativeTimeSpanString(data_provider.getCreated_time()));
                 break;
             case "comment_mention":
-                holder.menuItem.setText("you have a mention");
+                holder.menuItem.setText(data_provider.getUsername()+" mentioned you in a comment!\n"+getRelativeTimeSpanString(data_provider.getCreated_time()));
                 break;
             case "comment_discuss":
-                holder.menuItem.setText("theres a new comment");
+                holder.menuItem.setText(data_provider.getUsername()+" (or more) new comments on a rant you commented on!\n"+getRelativeTimeSpanString(data_provider.getCreated_time()));
                 break;
             case "content_vote":
-                holder.menuItem.setText("++ on your rant");
+                holder.menuItem.setText(data_provider.getUsername()+" ++'d your rant\n"+getRelativeTimeSpanString(data_provider.getCreated_time()));
                 break;
             case "rant_sub":
-                holder.menuItem.setText("a sub has made something");
+                holder.menuItem.setText(data_provider.getUsername()+" posted a new rant!\n"+getRelativeTimeSpanString(data_provider.getCreated_time()));
                 break;
-
         }
+
+
         if (data_provider.getRead() == 0 && !data_provider.getType().equals("all")) {
             holder.menuItem.setTextColor(Color.parseColor("#f4945c"));
         }

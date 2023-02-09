@@ -66,6 +66,9 @@ public class OptionActivity extends Activity {
         menuItems.add(new OptionsItem(null,"ALGO",0));
         menuItems.add(new OptionsItem(null,"- other -",1));
         menuItems.add(new OptionsItem(null,"SEARCH",0));
+        if (Account.isLoggedIn()) {
+            menuItems.add(new OptionsItem(null,"NOTIF",0));
+        }
         menuItems.add(new OptionsItem(null,"- settings -",1));
         menuItems.add(new OptionsItem(null,"MY PROFILE",0));
 
@@ -126,7 +129,10 @@ public class OptionActivity extends Activity {
                         break;
                     case "UPDATE":
                         checkUpdate();
-
+                        break;
+                    case "NOTIF":
+                        intent = new Intent(OptionActivity.this, NotifActivity.class);
+                        startActivity(intent);
                         break;
                     case "LOGIN":
                         intent = new Intent(OptionActivity.this, LoginActivity.class);
