@@ -39,6 +39,7 @@ public class ReplyActivity extends Activity {
     private ActivityReplyBinding binding;
     EditText editText;
     String id;
+    public static String replyText = "";
     public static Boolean uploaded_comment = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +54,18 @@ public class ReplyActivity extends Activity {
         setContentView(binding.getRoot());
 
         editText = findViewById(R.id.editText);
+        editText.setText(replyText);
 
         Intent intent = getIntent();
         id = intent.getStringExtra("id");
 
         uploaded_comment = false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        replyText = editText.getText().toString();
     }
 
     public void enter(View view) {
@@ -103,6 +111,7 @@ public class ReplyActivity extends Activity {
                         }
                         uploaded_comment = true;
                         finish();
+                        replyText = "";
                     } else if (response.code() == 400) {
                         toast("Invalid login credentials entered. Please try again. :(");
                     } else if (response.code() == 429) {

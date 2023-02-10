@@ -127,23 +127,30 @@ public class RantAdapter extends WearableRecyclerView.Adapter<RantAdapter.Recycl
                 }
                 break;
             case "comment":
-                holder.menuItem.setVisibility(View.VISIBLE);
-                holder.menuIcon.setVisibility(View.GONE);
-                holder.menuItem.setText(data_provider.getText());
-                if (data_provider.getScore()<0) {
-                    holder.detailsItem.setText(" "+data_provider.getScore());
-                } else {
-                    holder.detailsItem.setText("+" + data_provider.getScore());
-                }
-                break;
             case "rant":
                 holder.menuItem.setVisibility(View.VISIBLE);
                 holder.menuIcon.setVisibility(View.GONE);
                 holder.menuItem.setText(data_provider.getText());
+                holder.detailsItem.setVisibility(View.GONE);
+                break;
+            case "amount":
+                holder.menuItem.setVisibility(View.VISIBLE);
+                holder.menuIcon.setVisibility(View.GONE);
+                holder.menuItem.setVisibility(View.GONE);
                 if (data_provider.getScore()<0) {
                     holder.detailsItem.setText(data_provider.getScore() + " comnts: " + data_provider.getNumComments());
                 } else {
                     holder.detailsItem.setText("+" + data_provider.getScore() + " comnts: " + data_provider.getNumComments());
+                }
+                break;
+            case "amountComment":
+                holder.menuItem.setVisibility(View.VISIBLE);
+                holder.menuIcon.setVisibility(View.GONE);
+                holder.menuItem.setVisibility(View.GONE);
+                if (data_provider.getScore()<0) {
+                    holder.detailsItem.setText(data_provider.getScore());
+                } else {
+                    holder.detailsItem.setText("+" + data_provider.getScore());
                 }
                 break;
             case "phone":

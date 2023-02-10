@@ -117,12 +117,12 @@ public class MainActivity extends Activity {
         String total_url;
         if (Account.isLoggedIn()) {
             total_url = BASE_URL
-                    + "devrant/rants?"+"token_id="+Account.id()+"&token_key="+Account.key()+"&user_id="+Account.user_id()+"&app=3&limit="+Account.limit()+"&sort="+sort+"&range=all&skip=0"
+                    + "devrant/rants?"+"token_id="+Account.id()+"&token_key="+Account.key()+"&user_id="+Account.user_id()+"&app=3&limit="+Account.limit()+"&sort="+sort+"&range=day&skip=0"
                     +"/";
 
         } else {
             total_url = BASE_URL
-                    + "devrant/rants?app=3&limit="+Account.limit()+"&sort="+sort+"&range=all&skip=0/";
+                    + "devrant/rants?app=3&limit="+Account.limit()+"&sort="+sort+"&range=day&skip=0/";
         }
 
 
@@ -169,9 +169,11 @@ public class MainActivity extends Activity {
 
     public void createFeedList(List<Rants> rants){
         ArrayList<RantItem> menuItems = new ArrayList<>();
-        menuItems.add(new RantItem(null,"devRant",0,"avatar",0,0));
+        menuItems.add(new RantItem(null,"devRant",0,"avatar",0,0,0,null));
+
+        // Can be added but takes up space idk u decide! menuItems.add(new RantItem(null,sort,0,"type",0, 0));
         if (Account.isLoggedIn()) {
-            menuItems.add(new RantItem(null,null,0,"notif",notif_amount, 0));
+            menuItems.add(new RantItem(null,null,0,"notif",notif_amount, 0,0,null));
         }
 
         for (Rants rant : rants){
@@ -181,10 +183,10 @@ public class MainActivity extends Activity {
             }
 
             if (rant.getAttached_image().toString().contains("http")) {
-                menuItems.add(new RantItem(null,s,rant.getId(),"feed",rant.getScore(), rant.getNum_comments()));
-                menuItems.add(new RantItem(null,s,rant.getId(),"image",rant.getScore(), rant.getNum_comments()));
+                menuItems.add(new RantItem(null,s,rant.getId(),"feed",rant.getScore(), rant.getNum_comments(),0,null));
+                menuItems.add(new RantItem(null,s,rant.getId(),"image",rant.getScore(), rant.getNum_comments(),0,null));
             } else {
-                menuItems.add(new RantItem(null,s,rant.getId(),"feed",rant.getScore(), rant.getNum_comments()));
+                menuItems.add(new RantItem(null,s,rant.getId(),"feed",rant.getScore(), rant.getNum_comments(),0,null));
             }
 
         }
@@ -204,23 +206,30 @@ public class MainActivity extends Activity {
             public void onItemClicked(final Integer menuPosition) {
                 RantItem menuItem = menuItems.get(menuPosition);
 
-                if (menuItem.getType().equals("avatar")) {
-                    if (sort.equals("recent")) {
-                        sort = "top";
-                        toast("top feed");
-                        requestFeed();
-                    } else {
-                        sort = "recent";
-                        toast("recent feed");
-                        requestFeed();
+                switch (menuItem.getType()) {
+                    case "avatar":
+                    case "type":
+                        if (sort.equals("recent")) {
+                            sort = "top";
+                            toast("top");
+                            requestFeed();
+                        } else {
+                            sort = "recent";
+                            toast("recent");
+                            requestFeed();
+                        }
+                        break;
+                    case "notif": {
+                        Intent intent = new Intent(MainActivity.this, NotifActivity.class);
+                        startActivity(intent);
+                        break;
                     }
-                } else if (menuItem.getType().equals("notif")) {
-                    Intent intent = new Intent(MainActivity.this, NotifActivity.class);
-                    startActivity(intent);
-                } else {
-                    Intent intent = new Intent(MainActivity.this, RantActivity.class);
-                    intent.putExtra("id",String.valueOf(menuItem.getId()));
-                    startActivity(intent);
+                    default: {
+                        Intent intent = new Intent(MainActivity.this, RantActivity.class);
+                        intent.putExtra("id", String.valueOf(menuItem.getId()));
+                        startActivity(intent);
+                        break;
+                    }
                 }
             }
         }));

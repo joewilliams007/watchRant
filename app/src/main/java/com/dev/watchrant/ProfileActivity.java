@@ -96,35 +96,35 @@ public class ProfileActivity extends Activity {
                     profile_avatar = user_avatar;
                     ArrayList<RantItem> menuItems = new ArrayList<>();
 
-                    menuItems.add(new RantItem(null,user_avatar,0, "avatar",0,0));
-                    menuItems.add(new RantItem(null,username+" +"+score,0, "details",0,0));
+                    menuItems.add(new RantItem(null,user_avatar,0, "avatar",0,0,0,null));
+                    menuItems.add(new RantItem(null,username+" +"+score,0, "details",0,0,0,null));
 
                     if (about.length()>0) {
-                        menuItems.add(new RantItem(null,about,0,"info",0,0));
+                        menuItems.add(new RantItem(null,about,0,"info",0,0,0,null));
                     }
                     if (github.length()>0) {
                         menuItems.add(new RantItem(null,
-                                "github: "+github ,0,"phone",0,0));
+                                "github: "+github ,0,"phone",0,0,0,null));
                     }
                     if (website.length()>0) {
-                        menuItems.add(new RantItem(null,website,0, "phone",0,0));
+                        menuItems.add(new RantItem(null,website,0, "phone",0,0,0,null));
                     }
                     if (location.length()>0) {
                         menuItems.add(new RantItem(null,
-                                "location: "+location ,0,"info_small",0,0));
+                                "location: "+location ,0,"info_small",0,0,0,null));
                     }
                     menuItems.add(new RantItem(null,
                                     "rants: "+rants_count
                                     +"\nupvoted: "+upvoted_count
                                     +"\ncomments: "+upvoted_count
                                     +"\nfavorites: "+favorites_count
-                                    +"\ncollabs: "+collabs_count,0,"info_small",0,0));
+                                    +"\ncollabs: "+collabs_count,0,"info_small",0,0,0,null));
 
                     if (skills.length()>0) {
-                        menuItems.add(new RantItem(null, "skills: "+skills,0,"info_small",0,0));
+                        menuItems.add(new RantItem(null, "skills: "+skills,0,"info_small",0,0,0,null));
                     }
-                    menuItems.add(new RantItem(null,"OPEN ON PHONE",0, "phone",0,0));
-                    menuItems.add(new RantItem(null,"RANTS",0, "info",0,0));
+                    menuItems.add(new RantItem(null,"OPEN ON PHONE",0, "phone",0,0,0,null));
+                    menuItems.add(new RantItem(null,"RANTS",0, "info",0,0,0,null));
 
                     createFeedList(profile_rants,menuItems);
                 } else if (response.code() == 429) {
@@ -151,7 +151,7 @@ public class ProfileActivity extends Activity {
                 s = s.substring(0, Math.min(s.length(), 100))+"...";
             }
 
-            menuItems.add(new RantItem(null,s,rant.getId(),"feed",rant.getScore(), rant.getNum_comments()));
+            menuItems.add(new RantItem(null,s,rant.getId(),"feed",rant.getScore(), rant.getNum_comments(),rant.getCreated_time()*1000L,null));
         }
         build(menuItems);
     }

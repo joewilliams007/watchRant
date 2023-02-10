@@ -3,6 +3,7 @@ package com.dev.watchrant;
 import static com.dev.watchrant.ProfileActivity.isImage;
 
 import static com.dev.watchrant.ProfileActivity.rant_image;
+import static com.dev.watchrant.ReplyActivity.replyText;
 import static com.dev.watchrant.ReplyActivity.uploaded_comment;
 import static com.dev.watchrant.network.RetrofitClient.BASE_URL;
 
@@ -65,6 +66,7 @@ private ActivityRantBinding binding;
 
         Intent intent = getIntent();
         id = intent.getStringExtra("id");
+        replyText = ""; // reset reply text because 4sure its a new rant so we don't need the old reply text
         menuItems = new ArrayList<>();
         requestComments();
     }
@@ -92,13 +94,24 @@ private ActivityRantBinding binding;
                     List<Comment> comments = response.body().getComments();
                     //   toast("success: "+success+" size: "+rants.size());
 
-                    menuItems.add(new RantItem(null,user_avatar,0, "avatar",0,0));
-                    menuItems.add(new RantItem(null,rant.getUser_username()+" +"+rant.getUser_score(),rant.getUser_id(), "details",0,rant.getNum_comments()));
-                    menuItems.add(new RantItem(null,rant.getText(),0,"rant",rant.getScore(),rant.getNum_comments()));
+                    menuItems.add(new RantItem(null,user_avatar,0, "avatar",0,0,0,null));
+                    menuItems.add(new RantItem(null,rant.getUser_username()+" +"+rant.getUser_score(),rant.getUser_id(), "details",0,rant.getNum_comments(),rant.getCreated_time(),null));
+
+                    if (rant.getText().contains("\n")) {
+                        String[] splitRant = rant.getText().split("\n");
+                        for (String text: splitRant) {
+                            if (text.length()>0 ){
+                                menuItems.add(new RantItem(null,text,0,"rant",rant.getScore(),rant.getNum_comments(),rant.getCreated_time(),rant.getUser_username()));
+                            }
+                        }
+                    } else {
+                        menuItems.add(new RantItem(null,rant.getText(),0,"rant",rant.getScore(),rant.getNum_comments(),rant.getCreated_time(),rant.getUser_username()));
+                    }
+                    menuItems.add(new RantItem(null,"amount",0,"amount",rant.getScore(),rant.getNum_comments(),rant.getCreated_time(),rant.getUser_username()));
 
                     if (rant.getAttached_image().toString().contains("http")) {
                         String url = rant.getAttached_image().toString().replace("{url=","").split(", width")[0];
-                        menuItems.add(new RantItem(url,url,0, "image",0,0));
+                        menuItems.add(new RantItem(url,url,0, "image",0,0,0,null));
                     }
 
                     createFeedList(comments, menuItems);
@@ -133,20 +146,26 @@ private ActivityRantBinding binding;
         for (Comment comment : comments){
             String s = comment.getBody();
 
-            if (!users_of_comments.contains(comment.getUser_username())) {
-                users_of_comments.add(comment.getUser_username());
+            menuItems.add(new RantItem(null,comment.getUser_username()+" "+comment.getUser_score(),comment.getUser_id(),"details",0,0,comment.getCreated_time(),comment.getUser_username()));
+
+            if (s.contains("\n")) {
+                String[] splitRant = s.split("\n");
+                for (String text: splitRant) {
+                    if (text.length()>0 ){
+                        menuItems.add(new RantItem(null,text,comment.getUser_id(),"comment",comment.getScore(),0,comment.getCreated_time(),comment.getUser_username()));
+                    }
+                }
+            } else {
+                menuItems.add(new RantItem(null,s,comment.getUser_id(),"comment",comment.getScore(),0,comment.getCreated_time(),comment.getUser_username()));
             }
-
-            menuItems.add(new RantItem(null,comment.getUser_username()+" +"+comment.getUser_score(),0, "details",0,0));
-            menuItems.add(new RantItem(null,s,comment.getUser_id(),"comment",comment.getScore(), 0));
-
             if (comment.getAttached_image()!=null) {
                 String url = comment.getAttached_image().toString().replace("{url=","").split(", width")[0].replace("\\\\","");
-                menuItems.add(new RantItem(url,url,0, "image",0,0));
+                menuItems.add(new RantItem(url,url,comment.getUser_id(), "image",0,0,comment.getCreated_time(),comment.getUser_username()));
             }
+            menuItems.add(new RantItem(null,"amount",0,"amountComment",comment.getScore(),0,comment.getCreated_time(),comment.getUser_username()));
         }
-        menuItems.add(new RantItem(null,"REPLY",0, "reply",0,0));
-        menuItems.add(new RantItem(null,"OPEN ON PHONE",0, "phone",0,0));
+        menuItems.add(new RantItem(null,"REPLY",0, "reply",0,0,0,null));
+        menuItems.add(new RantItem(null,"OPEN ON PHONE",0, "phone",0,0,0,null));
         build(menuItems);
     }
 
@@ -172,7 +191,12 @@ private ActivityRantBinding binding;
                 } else if (menuItem.getType().equals("phone")){
                     toast("launching on phone");
                     openUrl("https://devrant.com/"+rant_url);
-                } else if (menuItem.getId() != 0) {
+                } else if (menuItem.getType().equals("comment")) {
+                    replyText += "@" + menuItem.getUsername()+" ";
+                    Intent intent = new Intent(RantActivity.this, ReplyActivity.class);
+                    intent.putExtra("id", String.valueOf(id));
+                    startActivity(intent);
+                } else if (menuItem.getType().equals("details")) {
                     isImage = false;
                     Intent intent = new Intent(RantActivity.this, ProfileActivity.class);
                     intent.putExtra("id", String.valueOf(menuItem.getId()));
