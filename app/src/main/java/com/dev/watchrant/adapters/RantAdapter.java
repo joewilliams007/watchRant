@@ -14,9 +14,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.wear.widget.WearableRecyclerView;
 
+import com.dev.watchrant.auth.Account;
+import com.dev.watchrant.auth.MyApplication;
 import com.dev.watchrant.network.DownloadImageTask;
 import com.dev.watchrant.R;
 
@@ -125,6 +128,13 @@ public class RantAdapter extends WearableRecyclerView.Adapter<RantAdapter.Recycl
                 } else {
                     holder.detailsItem.setText("+" + data_provider.getScore() + " comnts: " + data_provider.getNumComments());
                 }
+                if (Account.isLoggedIn()) {
+                    if (data_provider.getVote_state()==1) {
+                        holder.menuItem.setBackground(ContextCompat.getDrawable(MyApplication.getAppContext(), R.drawable.rounded_corner_up));
+                    } else if (data_provider.getVote_state()<0) {
+                        holder.menuItem.setBackground(ContextCompat.getDrawable(MyApplication.getAppContext(), R.drawable.rounded_corner_down));
+                    }
+                }
                 break;
             case "comment":
             case "rant":
@@ -132,6 +142,14 @@ public class RantAdapter extends WearableRecyclerView.Adapter<RantAdapter.Recycl
                 holder.menuIcon.setVisibility(View.GONE);
                 holder.menuItem.setText(data_provider.getText());
                 holder.detailsItem.setVisibility(View.GONE);
+
+                if (Account.isLoggedIn()) {
+                    if (data_provider.getVote_state()==1) {
+                        holder.menuItem.setBackground(ContextCompat.getDrawable(MyApplication.getAppContext(), R.drawable.rounded_corner_up));
+                    } else if (data_provider.getVote_state()<0) {
+                        holder.menuItem.setBackground(ContextCompat.getDrawable(MyApplication.getAppContext(), R.drawable.rounded_corner_down));
+                    }
+                }
                 break;
             case "amount":
                 holder.menuItem.setVisibility(View.VISIBLE);
@@ -147,10 +165,14 @@ public class RantAdapter extends WearableRecyclerView.Adapter<RantAdapter.Recycl
                 holder.menuItem.setVisibility(View.VISIBLE);
                 holder.menuIcon.setVisibility(View.GONE);
                 holder.menuItem.setVisibility(View.GONE);
-                if (data_provider.getScore()<0) {
-                    holder.detailsItem.setText(data_provider.getScore());
-                } else {
-                    holder.detailsItem.setText("+" + data_provider.getScore());
+                try {
+                    if (data_provider.getScore() < 0) {
+                        holder.detailsItem.setText(data_provider.getScore());
+                    } else {
+                        holder.detailsItem.setText("+" + data_provider.getScore());
+                    }
+                } catch (Exception e){
+                    System.out.println("why");
                 }
                 break;
             case "phone":
@@ -171,6 +193,7 @@ public class RantAdapter extends WearableRecyclerView.Adapter<RantAdapter.Recycl
                 holder.menuItem.setBackground(null);
                 break;
         }
+
 
 
         /*if (data_provider.getImage()!=null) {

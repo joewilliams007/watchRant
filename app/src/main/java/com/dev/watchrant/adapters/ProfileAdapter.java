@@ -11,9 +11,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.wear.widget.WearableRecyclerView;
 
+import com.dev.watchrant.auth.Account;
+import com.dev.watchrant.auth.MyApplication;
 import com.dev.watchrant.network.DownloadImageTask;
 import com.dev.watchrant.R;
 
@@ -142,6 +145,7 @@ public class ProfileAdapter extends WearableRecyclerView.Adapter<ProfileAdapter.
                 } else {
                     holder.detailsItem.setText("+" + data_provider.getScore() + " comnts: " + data_provider.getNumComments());
                 }
+
                 break;
             case "phone":
                 holder.menuItem.setVisibility(View.VISIBLE);
@@ -154,7 +158,13 @@ public class ProfileAdapter extends WearableRecyclerView.Adapter<ProfileAdapter.
                 break;
 
         }
-
+        if (Account.isLoggedIn()) {
+            if (data_provider.getVote_state()==1) {
+                holder.menuItem.setBackground(ContextCompat.getDrawable(MyApplication.getAppContext(), R.drawable.rounded_corner_up));
+            } else if (data_provider.getVote_state()<0) {
+                holder.menuItem.setBackground(ContextCompat.getDrawable(MyApplication.getAppContext(), R.drawable.rounded_corner_down));
+            }
+        }
 
         /*if (data_provider.getImage()!=null) {
 

@@ -63,8 +63,12 @@ public class ProfileActivity extends Activity {
 
     private void requestProfile() {
         MethodsProfile methods = RetrofitClient.getRetrofitInstance().create(MethodsProfile.class);
-        String total_url = BASE_URL + "users/"+id+"?app=3";
-
+        String total_url;
+        if (Account.isLoggedIn()){
+            total_url = BASE_URL + "users/"+id+"?app=3&token_id="+Account.id()+"&token_key="+Account.key()+"&user_id="+Account.user_id();
+        } else {
+            total_url = BASE_URL + "users/"+id+"?app=3";
+        }
         Call<ModelProfile> call = methods.getAllData(total_url);
         call.enqueue(new Callback<ModelProfile>() {
             @SuppressLint("SetTextI18n")
@@ -96,35 +100,35 @@ public class ProfileActivity extends Activity {
                     profile_avatar = user_avatar;
                     ArrayList<RantItem> menuItems = new ArrayList<>();
 
-                    menuItems.add(new RantItem(null,user_avatar,0, "avatar",0,0,0,null));
-                    menuItems.add(new RantItem(null,username+" +"+score,0, "details",0,0,0,null));
+                    menuItems.add(new RantItem(null,user_avatar,0, "avatar",0,0,0,null,0));
+                    menuItems.add(new RantItem(null,username+" +"+score,0, "details",0,0,0,null,0));
 
                     if (about.length()>0) {
-                        menuItems.add(new RantItem(null,about,0,"info",0,0,0,null));
+                        menuItems.add(new RantItem(null,about,0,"info",0,0,0,null,0));
                     }
                     if (github.length()>0) {
                         menuItems.add(new RantItem(null,
-                                "github: "+github ,0,"phone",0,0,0,null));
+                                "github: "+github ,0,"phone",0,0,0,null,0));
                     }
                     if (website.length()>0) {
-                        menuItems.add(new RantItem(null,website,0, "phone",0,0,0,null));
+                        menuItems.add(new RantItem(null,website,0, "phone",0,0,0,null,0));
                     }
                     if (location.length()>0) {
                         menuItems.add(new RantItem(null,
-                                "location: "+location ,0,"info_small",0,0,0,null));
+                                "location: "+location ,0,"info_small",0,0,0,null,0));
                     }
                     menuItems.add(new RantItem(null,
                                     "rants: "+rants_count
                                     +"\nupvoted: "+upvoted_count
                                     +"\ncomments: "+upvoted_count
                                     +"\nfavorites: "+favorites_count
-                                    +"\ncollabs: "+collabs_count,0,"info_small",0,0,0,null));
+                                    +"\ncollabs: "+collabs_count,0,"info_small",0,0,0,null,0));
 
                     if (skills.length()>0) {
-                        menuItems.add(new RantItem(null, "skills: "+skills,0,"info_small",0,0,0,null));
+                        menuItems.add(new RantItem(null, "skills: "+skills,0,"info_small",0,0,0,null,0));
                     }
-                    menuItems.add(new RantItem(null,"OPEN ON PHONE",0, "phone",0,0,0,null));
-                    menuItems.add(new RantItem(null,"RANTS",0, "info",0,0,0,null));
+                    menuItems.add(new RantItem(null,"OPEN ON PHONE",0, "phone",0,0,0,null,0));
+                    menuItems.add(new RantItem(null,"RANTS",0, "info",0,0,0,null,0));
 
                     createFeedList(profile_rants,menuItems);
                 } else if (response.code() == 429) {
@@ -150,8 +154,11 @@ public class ProfileActivity extends Activity {
             if (s.length()>100) {
                 s = s.substring(0, Math.min(s.length(), 100))+"...";
             }
-
-            menuItems.add(new RantItem(null,s,rant.getId(),"feed",rant.getScore(), rant.getNum_comments(),rant.getCreated_time()*1000L,null));
+            int rantVote = rant.getVote_state();
+            if (Account.user_id() == rant.getUser_id()) {
+                rantVote = 0;
+            }
+            menuItems.add(new RantItem(null,s,rant.getId(),"feed",rant.getScore(), rant.getNum_comments(),rant.getCreated_time()*1000L,null,rantVote));
         }
         build(menuItems);
     }

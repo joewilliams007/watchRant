@@ -94,24 +94,27 @@ private ActivityRantBinding binding;
                     List<Comment> comments = response.body().getComments();
                     //   toast("success: "+success+" size: "+rants.size());
 
-                    menuItems.add(new RantItem(null,user_avatar,0, "avatar",0,0,0,null));
-                    menuItems.add(new RantItem(null,rant.getUser_username()+" +"+rant.getUser_score(),rant.getUser_id(), "details",0,rant.getNum_comments(),rant.getCreated_time(),null));
-
+                    menuItems.add(new RantItem(null,user_avatar,0, "avatar",0,0,0,null,0));
+                    menuItems.add(new RantItem(null,rant.getUser_username()+" +"+rant.getUser_score(),rant.getUser_id(), "details",0,rant.getNum_comments(),rant.getCreated_time(),null,rant.getVote_state()));
+                    int rantVote = rant.getVote_state();
+                    if (Account.user_id() == rant.getUser_id()) {
+                        rantVote = 0;
+                    }
                     if (rant.getText().contains("\n")) {
                         String[] splitRant = rant.getText().split("\n");
                         for (String text: splitRant) {
                             if (text.length()>0 ){
-                                menuItems.add(new RantItem(null,text,0,"rant",rant.getScore(),rant.getNum_comments(),rant.getCreated_time(),rant.getUser_username()));
+                                menuItems.add(new RantItem(null,text,0,"rant",rant.getScore(),rant.getNum_comments(),rant.getCreated_time(),rant.getUser_username(),rantVote));
                             }
                         }
                     } else {
-                        menuItems.add(new RantItem(null,rant.getText(),0,"rant",rant.getScore(),rant.getNum_comments(),rant.getCreated_time(),rant.getUser_username()));
+                        menuItems.add(new RantItem(null,rant.getText(),0,"rant",rant.getScore(),rant.getNum_comments(),rant.getCreated_time(),rant.getUser_username(),rantVote));
                     }
-                    menuItems.add(new RantItem(null,"amount",0,"amount",rant.getScore(),rant.getNum_comments(),rant.getCreated_time(),rant.getUser_username()));
+                    menuItems.add(new RantItem(null,"amount",0,"amount",rant.getScore(),rant.getNum_comments(),rant.getCreated_time(),rant.getUser_username(),rantVote));
 
                     if (rant.getAttached_image().toString().contains("http")) {
                         String url = rant.getAttached_image().toString().replace("{url=","").split(", width")[0];
-                        menuItems.add(new RantItem(url,url,0, "image",0,0,0,null));
+                        menuItems.add(new RantItem(url,url,0, "image",0,0,0,null,0));
                     }
 
                     createFeedList(comments, menuItems);
@@ -145,27 +148,30 @@ private ActivityRantBinding binding;
     public void createFeedList(List<Comment> comments, ArrayList<RantItem> menuItems){
         for (Comment comment : comments){
             String s = comment.getBody();
-
-            menuItems.add(new RantItem(null,comment.getUser_username()+" "+comment.getUser_score(),comment.getUser_id(),"details",0,0,comment.getCreated_time(),comment.getUser_username()));
+            int rantVote = comment.getVote_state();
+            if (Account.user_id() == comment.getUser_id()) {
+                rantVote = 0;
+            }
+            menuItems.add(new RantItem(null,comment.getUser_username()+" "+comment.getUser_score(),comment.getUser_id(),"details",0,0,comment.getCreated_time(),comment.getUser_username(),rantVote));
 
             if (s.contains("\n")) {
                 String[] splitRant = s.split("\n");
                 for (String text: splitRant) {
                     if (text.length()>0 ){
-                        menuItems.add(new RantItem(null,text,comment.getUser_id(),"comment",comment.getScore(),0,comment.getCreated_time(),comment.getUser_username()));
+                        menuItems.add(new RantItem(null,text,comment.getUser_id(),"comment",comment.getScore(),0,comment.getCreated_time(),comment.getUser_username(),rantVote));
                     }
                 }
             } else {
-                menuItems.add(new RantItem(null,s,comment.getUser_id(),"comment",comment.getScore(),0,comment.getCreated_time(),comment.getUser_username()));
+                menuItems.add(new RantItem(null,s,comment.getUser_id(),"comment",comment.getScore(),0,comment.getCreated_time(),comment.getUser_username(),rantVote));
             }
             if (comment.getAttached_image()!=null) {
                 String url = comment.getAttached_image().toString().replace("{url=","").split(", width")[0].replace("\\\\","");
-                menuItems.add(new RantItem(url,url,comment.getUser_id(), "image",0,0,comment.getCreated_time(),comment.getUser_username()));
+                menuItems.add(new RantItem(url,url,comment.getUser_id(), "image",0,0,comment.getCreated_time(),comment.getUser_username(),comment.getVote_state()));
             }
-            menuItems.add(new RantItem(null,"amount",0,"amountComment",comment.getScore(),0,comment.getCreated_time(),comment.getUser_username()));
+            menuItems.add(new RantItem(null,"amount",0,"amountComment",comment.getScore(),0,comment.getCreated_time(),comment.getUser_username(),rantVote));
         }
-        menuItems.add(new RantItem(null,"REPLY",0, "reply",0,0,0,null));
-        menuItems.add(new RantItem(null,"OPEN ON PHONE",0, "phone",0,0,0,null));
+        menuItems.add(new RantItem(null,"REPLY",0, "reply",0,0,0,null,0));
+        menuItems.add(new RantItem(null,"OPEN ON PHONE",0, "phone",0,0,0,null,0));
         build(menuItems);
     }
 

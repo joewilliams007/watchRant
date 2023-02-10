@@ -30,6 +30,11 @@ public class Rants {
     public User_avatar getUser_avatar() {
         return user_avatar;
     }
+    int vote_state;
+
+    public int getVote_state() {
+        return vote_state;
+    }
 
     public int getId() {
         return id;

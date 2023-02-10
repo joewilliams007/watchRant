@@ -10,8 +10,13 @@ public class RantItem {
 
     private int id;
     private String username;
+    private int vote_state;
 
-    public RantItem(String image_url, String text, int id, String type, int score, int numComments, long created_time, String username) {
+    public int getVote_state() {
+        return vote_state;
+    }
+
+    public RantItem(String image_url, String text, int id, String type, int score, int numComments, long created_time, String username, int vote_state) {
         this.image = image_url;
         this.text = text;
         this.id = id;
@@ -19,6 +24,7 @@ public class RantItem {
         this.score = score;
         this.numComments = numComments;
         this.username = username;
+        this.vote_state = vote_state;
     }
 
     public String getUsername() {

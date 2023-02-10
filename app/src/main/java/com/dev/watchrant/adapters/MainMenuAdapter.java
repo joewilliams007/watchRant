@@ -10,10 +10,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.wear.widget.WearableRecyclerView;
 
 import com.dev.watchrant.R;
+import com.dev.watchrant.auth.Account;
+import com.dev.watchrant.auth.MyApplication;
 
 import java.util.ArrayList;
 
@@ -70,9 +73,7 @@ public class MainMenuAdapter extends WearableRecyclerView.Adapter<MainMenuAdapte
             case "avatar":
                 holder.menuItem.setVisibility(View.GONE);
                 holder.detailsItem.setVisibility(View.GONE);
-
-
-                    holder.menuIcon.setVisibility(View.VISIBLE);
+                holder.menuIcon.setVisibility(View.VISIBLE);
 
                 break;
             case "details":
@@ -100,6 +101,13 @@ public class MainMenuAdapter extends WearableRecyclerView.Adapter<MainMenuAdapte
                     holder.detailsItem.setText(data_provider.getScore() + " comnts: " + data_provider.getNumComments());
                 } else {
                     holder.detailsItem.setText("+" + data_provider.getScore() + " comnts: " + data_provider.getNumComments());
+                }
+                if (Account.isLoggedIn()) {
+                    if (data_provider.getVote_state()==1) {
+                        holder.menuItem.setBackground(ContextCompat.getDrawable(MyApplication.getAppContext(), R.drawable.rounded_corner_up));
+                    } else if (data_provider.getVote_state()<0) {
+                        holder.menuItem.setBackground(ContextCompat.getDrawable(MyApplication.getAppContext(), R.drawable.rounded_corner_down));
+                    }
                 }
                 break;
             case "image":

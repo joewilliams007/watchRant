@@ -11,12 +11,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.wear.widget.SwipeDismissFrameLayout;
 import androidx.wear.widget.WearableLinearLayoutManager;
 import androidx.wear.widget.WearableRecyclerView;
@@ -45,7 +47,9 @@ public class MainActivity extends Activity {
     RantLoadingAnimation rantLoadingAnimation;
     ProgressBar progressBar;
     View view;
+    ImageView imageView;
     com.dev.watchrant.databinding.ActivityMainBinding binding;
+    WearableRecyclerView wearableRecyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (Account.theme().equals("dark")) {
@@ -61,8 +65,14 @@ public class MainActivity extends Activity {
 
         Intent intent = getIntent();
         Boolean isSearch = intent.getBooleanExtra("isSearch",false);
-
+        wearableRecyclerView = binding.mainMenuView;
         progressBar = findViewById(R.id.progressBar);
+        imageView = findViewById(R.id.imageView);
+        if (!Account.theme().equals("dark")) {
+            imageView.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.empty_screen_full_black1));
+        }
+        imageView.setVisibility(View.VISIBLE);
+        wearableRecyclerView.setVisibility(View.GONE);
 
         if (isSearch) {
             toast("found "+search_rants.size()+" search results");
@@ -126,8 +136,8 @@ public class MainActivity extends Activity {
         }
 
 
-
         Call<ModelFeed> call = methods.getAllData(total_url);
+
         call.enqueue(new Callback<ModelFeed>() {
             @SuppressLint("SetTextI18n")
             @Override
@@ -152,6 +162,9 @@ public class MainActivity extends Activity {
                 if (rantLoadingAnimation != null)
                     rantLoadingAnimation.stop();
                 progressBar.setVisibility(View.GONE);
+                imageView.setVisibility(View.GONE);
+                wearableRecyclerView.setVisibility(View.VISIBLE);
+
             }
 
             @Override
@@ -169,11 +182,11 @@ public class MainActivity extends Activity {
 
     public void createFeedList(List<Rants> rants){
         ArrayList<RantItem> menuItems = new ArrayList<>();
-        menuItems.add(new RantItem(null,"devRant",0,"avatar",0,0,0,null));
+        menuItems.add(new RantItem(null,"devRant",0,"avatar",0,0,0,null,0));
 
         // Can be added but takes up space idk u decide! menuItems.add(new RantItem(null,sort,0,"type",0, 0));
         if (Account.isLoggedIn()) {
-            menuItems.add(new RantItem(null,null,0,"notif",notif_amount, 0,0,null));
+            menuItems.add(new RantItem(null,null,0,"notif",notif_amount, 0,0,null,0));
         }
 
         for (Rants rant : rants){
@@ -183,10 +196,10 @@ public class MainActivity extends Activity {
             }
 
             if (rant.getAttached_image().toString().contains("http")) {
-                menuItems.add(new RantItem(null,s,rant.getId(),"feed",rant.getScore(), rant.getNum_comments(),0,null));
-                menuItems.add(new RantItem(null,s,rant.getId(),"image",rant.getScore(), rant.getNum_comments(),0,null));
+                menuItems.add(new RantItem(null,s,rant.getId(),"feed",rant.getScore(), rant.getNum_comments(),0,null,rant.getVote_state()));
+                menuItems.add(new RantItem(null,s,rant.getId(),"image",rant.getScore(), rant.getNum_comments(),0,null,rant.getVote_state()));
             } else {
-                menuItems.add(new RantItem(null,s,rant.getId(),"feed",rant.getScore(), rant.getNum_comments(),0,null));
+                menuItems.add(new RantItem(null,s,rant.getId(),"feed",rant.getScore(), rant.getNum_comments(),0,null,rant.getVote_state()));
             }
 
         }
@@ -194,7 +207,7 @@ public class MainActivity extends Activity {
     }
 
     private void build(ArrayList<RantItem> menuItems) {
-        WearableRecyclerView wearableRecyclerView = binding.mainMenuView;
+
 
         CustomScrollingLayoutCallback customScrollingLayoutCallback =
                 new CustomScrollingLayoutCallback();

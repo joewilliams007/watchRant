@@ -6,7 +6,12 @@ public class Comment {
     String body;
     int score;
     int created_time;
-    int vote_status;
+    int vote_state;
+
+    public int getVote_state() {
+        return vote_state;
+    }
+
     int user_id;
     String user_username;
     int user_score;
@@ -36,9 +41,6 @@ public class Comment {
         return created_time;
     }
 
-    public int getVote_status() {
-        return vote_status;
-    }
 
     public int getUser_id() {
         return user_id;
