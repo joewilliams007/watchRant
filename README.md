@@ -12,7 +12,7 @@ Tested and developed on Samsung watch5.
 |       ✅       | feed (top/recent/algo)          |
 |       ✅       | rant (images supported)                  |
 |       ✅       | comments (images supported)                        |
-|       ✅       | make huge rant and comment splitt    |
+|       ✅       | make huge rant and comment split    |
 |       ✅       | login / logout   |
 |       ✅       | comment (only text)   |
 |       ✅       | tap on comment to add @username to your comment    |
