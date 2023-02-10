@@ -23,6 +23,7 @@ Tested and developed on Samsung watch5.
 |       ✅       | update (checks for updates)   |
 |       ✅       | download (images/avatars)   |
 |       ✅       | search (rants/profiles)   |
+|       ✅       | notifications (amount/tapOnNotifs/SetNotifRead)   |
 |       ✅       | open on phone   |
 |       ✅       | credits   |
 
