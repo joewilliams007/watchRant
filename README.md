@@ -9,10 +9,10 @@ Tested and developed on Samsung watch5.
 
 | Available |                Feature           |
 | :-----------: | :--------------------------------: |
-|       ✅       | feed (top/recent/algo)          |
-|       ✅       | rant (images supported)                  |
-|       ✅       | comments (images supported)                        |
-|       ✅       | make huge rant and comment split    |
+|       ✅       | feed (top/recent/algo) |
+|       ✅       | rant (images supported) |
+|       ✅       | comments (images supported)|
+|       ✅       | make huge rant and comment split|
 |       ✅       | login / logout   |
 |       ✅       | comment (only text)   |
 |       ✅       | tap on comment to add @username to your comment    |
@@ -25,6 +25,7 @@ Tested and developed on Samsung watch5.
 |       ✅       | update (checks for updates)   |
 |       ✅       | download (images/avatars)   |
 |       ✅       | search (rants/profiles)   |
+|       ✅       | surprise me   |
 |       ✅       | notifications (amount/tapOnNotifs/SetNotifRead)   |
 |       ✅       | open on phone   |
 |       ✅       | credits   |
