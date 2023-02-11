@@ -14,7 +14,8 @@ Tested and developed on Samsung watch5.
 |       ✅       | comments (images supported)|
 |       ✅       | make huge rant and comment split|
 |       ✅       | login / logout   |
-|       ✅       | comment (only text)   |
+|       ✅       | upload comment (only text)   |
+|       ✅       | upload rant (only text)   |
 |       ✅       | tap on comment to add @username to your comment    |
 |       ✅       | themes (dark/amoled) |
 |       ✅       | Animation of SIMMORSAL devRantNativeClient   |
