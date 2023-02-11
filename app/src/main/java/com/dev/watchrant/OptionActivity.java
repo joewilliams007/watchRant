@@ -2,6 +2,7 @@ package com.dev.watchrant;
 
 import static com.dev.watchrant.MainActivity.sort;
 import static com.dev.watchrant.RantActivity.openUrl;
+import static com.dev.watchrant.network.RetrofitClient.BASE_URL;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -22,9 +23,14 @@ import androidx.wear.widget.WearableRecyclerView;
 
 import com.dev.watchrant.adapters.OptionsAdapter;
 import com.dev.watchrant.adapters.OptionsItem;
+import com.dev.watchrant.adapters.RantItem;
 import com.dev.watchrant.auth.Account;
+import com.dev.watchrant.classes.Comment;
+import com.dev.watchrant.classes.Rants;
 import com.dev.watchrant.databinding.ActivityOptionBinding;
+import com.dev.watchrant.methods.MethodsRant;
 import com.dev.watchrant.methods.MethodsUpdate;
+import com.dev.watchrant.models.ModelRant;
 import com.dev.watchrant.models.ModelUpdate;
 import com.dev.watchrant.network.RetrofitClient;
 import com.google.android.gms.wearable.NodeClient;
@@ -32,6 +38,7 @@ import com.google.android.gms.wearable.Wearable;
 import com.google.common.util.concurrent.ListenableFuture;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 
@@ -42,7 +49,7 @@ import retrofit2.Response;
 public class OptionActivity extends Activity {
 
     private ActivityOptionBinding binding;
-
+    ProgressBar progressBar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (Account.theme().equals("dark")) {
@@ -54,7 +61,7 @@ public class OptionActivity extends Activity {
 
         binding = ActivityOptionBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        progressBar = findViewById(R.id.progressBar);
         createFeedList();
     }
 
@@ -65,6 +72,7 @@ public class OptionActivity extends Activity {
         menuItems.add(new OptionsItem(null,"RECENT",0));
         menuItems.add(new OptionsItem(null,"ALGO",0));
         menuItems.add(new OptionsItem(null,"- other -",1));
+        menuItems.add(new OptionsItem(null,"SURPRISE ME",0));
         menuItems.add(new OptionsItem(null,"SEARCH",0));
         if (Account.isLoggedIn()) {
             menuItems.add(new OptionsItem(null,"NOTIF",0));
@@ -100,6 +108,13 @@ public class OptionActivity extends Activity {
         menuItems.add(new OptionsItem(null,"SIMMORSAL\n(rant animation)",1));
         menuItems.add(new OptionsItem(null,"Skayo & frogstair\n(api docs)",1));
         build(menuItems);
+        menuItems.add(new OptionsItem(null,"- legal -",1));
+        menuItems.add(new OptionsItem(null,"TERMS OF SERVICE*",3));
+        menuItems.add(new OptionsItem(null,"PRIVACY POLICY*",3));
+        menuItems.add(new OptionsItem(null,"*watchRant is not in any way affiliated with devRant."+
+                "If you use watchRant however, you connect to devRants API and thereby need to agree to their privacy policy and terms of service.",1));
+        menuItems.add(new OptionsItem(null,"By tapping on CHECK FOR UPDATE, a Github endpoint API is being accessed. No account or personal data is being sent.",1));
+        menuItems.add(new OptionsItem(null,"This app is open source and therefore you can check and change anything that it does anyways.",1));
     }
 
     private void build(ArrayList<OptionsItem> menuItems) {
@@ -150,6 +165,9 @@ public class OptionActivity extends Activity {
                             toast("please login first");
                         }
                         break;
+                    case "SURPRISE ME":
+                        getSurpriseId();
+                        break;
                     case "THEME":
                         if (Account.theme().equals("dark")) {
                             Account.setTheme("amoled");
@@ -189,9 +207,17 @@ public class OptionActivity extends Activity {
                         toast("check phone");
                         openUrl("https://github.com/joewilliams007/watchRant");
                         break;
-                    case "REGISTER":
+                    case "TERMS OF SERVICE*":
                         toast("check phone");
                         openUrl("https://devrant.com/feed/top/month?signup=1");
+                        break;
+                    case "PRIVACY POLICY*":
+                        toast("check phone");
+                        openUrl("https://devrant.com/privacy");
+                        break;
+                    case "REGISTER":
+                        toast("check phone");
+                        openUrl("https://devrant.com/terms");
                         break;
                     case "LIMIT":
                         if (Account.limit() == 10) {
@@ -217,6 +243,47 @@ public class OptionActivity extends Activity {
 
             }
         }));
+    }
+
+    private void getSurpriseId() { // Get random Rant. Need to make 2 api calls cuz comments don't come with the surprise sadly
+        MethodsRant methods = RetrofitClient.getRetrofitInstance().create(MethodsRant.class);
+        String total_url;
+        if (Account.isLoggedIn()) {
+            total_url = BASE_URL + "devrant/rants/surprise?app=3&token_id="+Account.id()+"&token_key="+Account.key()+"&user_id="+Account.user_id();
+        } else {
+            total_url = BASE_URL + "devrant/rants/surprise?app=3";
+        }
+
+        progressBar.setVisibility(View.VISIBLE);
+        Call<ModelRant> call = methods.getAllData(total_url);
+        call.enqueue(new Callback<ModelRant>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onResponse(@NonNull Call<ModelRant> call, @NonNull Response<ModelRant> response) {
+                if (response.isSuccessful()) {
+
+                    // Do awesome stuff
+                    assert response.body() != null;
+                    String id = String.valueOf(response.body().getRant().getId());
+                    Intent intent = new Intent(OptionActivity.this, RantActivity.class);
+                    intent.putExtra("id",id); // whats it gonna be
+                    startActivity(intent);
+
+                } else if (response.code() == 429) {
+                    // Handle unauthorized
+                } else {
+                    toast(response.message());
+                }
+                progressBar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ModelRant> call, @NonNull Throwable t) {
+                Log.d("no network", t.toString());
+                toast(t.toString());
+                progressBar.setVisibility(View.GONE);
+            }
+        });
     }
 
     private void logout() {
@@ -258,7 +325,6 @@ public class OptionActivity extends Activity {
         MethodsUpdate methods = RetrofitClient.getRetrofitInstance().create(MethodsUpdate.class);
         String total_url = "https://raw.githubusercontent.com/joewilliams007/jsonapi/gh-pages/adress.json";
 
-        ProgressBar progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
 
         Call<ModelUpdate> call = methods.getAllData(total_url);
