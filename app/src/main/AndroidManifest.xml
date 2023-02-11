@@ -27,6 +27,10 @@
             android:value="true" />
 
         <activity
+            android:name=".WriteRantActivity"
+            android:exported="false"
+            android:label="@string/title_activity_write_rant" />
+        <activity
             android:name=".NotifActivity"
             android:exported="false"
             android:label="@string/title_activity_notif" />

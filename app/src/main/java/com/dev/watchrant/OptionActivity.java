@@ -50,6 +50,7 @@ public class OptionActivity extends Activity {
 
     private ActivityOptionBinding binding;
     ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (Account.theme().equals("dark")) {
@@ -76,7 +77,9 @@ public class OptionActivity extends Activity {
         menuItems.add(new OptionsItem(null,"SEARCH",0));
         if (Account.isLoggedIn()) {
             menuItems.add(new OptionsItem(null,"NOTIF",0));
+            menuItems.add(new OptionsItem(null,"NEW RANT",0));
         }
+
         menuItems.add(new OptionsItem(null,"- settings -",1));
         menuItems.add(new OptionsItem(null,"MY PROFILE",0));
 
@@ -141,6 +144,10 @@ public class OptionActivity extends Activity {
                     case "SEARCH":
                         intent = new Intent(OptionActivity.this, SearchActivity.class);
                         startActivity(intent);
+                        break;
+                    case "NEW RANT":
+                        toast("select type");
+                        createChooseList();
                         break;
                     case "UPDATE":
                         checkUpdate();
@@ -234,6 +241,31 @@ public class OptionActivity extends Activity {
 
                         toast(Account.limit()+" rants");
                         break;
+                    case "Rant/Story":
+                        intent = new Intent(OptionActivity.this, WriteRantActivity.class);
+                        intent.putExtra("type", "1");
+                        startActivity(intent);
+                        break;
+                    case "Joke/Meme":
+                        intent = new Intent(OptionActivity.this, WriteRantActivity.class);
+                        intent.putExtra("type", "2");
+                        startActivity(intent);
+                        break;
+                    case "Question":
+                        intent = new Intent(OptionActivity.this, WriteRantActivity.class);
+                        intent.putExtra("type", "3");
+                        startActivity(intent);
+                        break;
+                    case "devRant":
+                        intent = new Intent(OptionActivity.this, WriteRantActivity.class);
+                        intent.putExtra("type", "5");
+                        startActivity(intent);
+                        break;
+                    case "Random":
+                        intent = new Intent(OptionActivity.this, WriteRantActivity.class);
+                        intent.putExtra("type", "6");
+                        startActivity(intent);
+                        break;
                 }
                 if (menuItem.getText().contains("VERSION")) {
                     int versionCode = BuildConfig.VERSION_CODE;
@@ -243,6 +275,17 @@ public class OptionActivity extends Activity {
 
             }
         }));
+    }
+
+    public void createChooseList() {
+        ArrayList<OptionsItem> menuItems = new ArrayList<>();
+        menuItems.add(new OptionsItem(null,"select type",1));
+        menuItems.add(new OptionsItem(null,"Rant/Story",0));
+        menuItems.add(new OptionsItem(null,"Joke/Meme",0));
+        menuItems.add(new OptionsItem(null,"Question",0));
+        menuItems.add(new OptionsItem(null,"devRant",0));
+        menuItems.add(new OptionsItem(null,"Random",0));
+        build(menuItems);
     }
 
     private void getSurpriseId() { // Get random Rant. Need to make 2 api calls cuz comments don't come with the surprise sadly

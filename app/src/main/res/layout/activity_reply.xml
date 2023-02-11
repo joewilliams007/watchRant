@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:layout_marginTop="20dp"
-        android:textSize="10dp"
+        android:textSize="10sp"
         android:textColor="#FFFFFF"
         android:textColorHint="#FFFFFF"
         android:inputType="textMultiLine"
@@ -30,7 +30,7 @@
         android:gravity="center"
         android:fontFamily="@font/nunito"
         android:src="@drawable/rounded_corner"
-        android:textSize="10dp"
+        android:textSize="10sp"
         android:padding="2dp"
         android:onClick="enter"
         android:layout_below="@+id/editText" />
