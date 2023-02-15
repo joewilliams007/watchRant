@@ -10,8 +10,8 @@ android {
         applicationId "com.dev.watchrant"
         minSdk 28
         targetSdk 33
-        versionCode 7
-        versionName "0.1.6"
+        versionCode 8
+        versionName "0.1.7"
 
 
     }

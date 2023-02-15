@@ -170,7 +170,9 @@ private ActivityRantBinding binding;
             }
             menuItems.add(new RantItem(null,"amount",0,"amountComment",comment.getScore(),0,comment.getCreated_time(),comment.getUser_username(),rantVote));
         }
+
         menuItems.add(new RantItem(null,"REPLY",0, "reply",0,0,0,null,0));
+
         menuItems.add(new RantItem(null,"OPEN ON PHONE",0, "phone",0,0,0,null,0));
         build(menuItems);
     }
@@ -198,10 +200,14 @@ private ActivityRantBinding binding;
                     toast("launching on phone");
                     openUrl("https://devrant.com/"+rant_url);
                 } else if (menuItem.getType().equals("comment")) {
-                    replyText += "@" + menuItem.getUsername()+" ";
-                    Intent intent = new Intent(RantActivity.this, ReplyActivity.class);
-                    intent.putExtra("id", String.valueOf(id));
-                    startActivity(intent);
+                    if (Account.isLoggedIn()) {
+                        replyText += "@" + menuItem.getUsername()+" ";
+                        Intent intent = new Intent(RantActivity.this, ReplyActivity.class);
+                        intent.putExtra("id", String.valueOf(id));
+                        startActivity(intent);
+                    } else {
+                        toast("please login first");
+                    }
                 } else if (menuItem.getType().equals("details")) {
                     isImage = false;
                     Intent intent = new Intent(RantActivity.this, ProfileActivity.class);
@@ -211,9 +217,13 @@ private ActivityRantBinding binding;
                     Intent intent = new Intent(RantActivity.this, AvatarActivity.class);
                     startActivity(intent);
                 } else if (menuItem.getType().equals("reply")) {
-                    Intent intent = new Intent(RantActivity.this, ReplyActivity.class);
-                    intent.putExtra("id", String.valueOf(id));
-                    startActivity(intent);
+                    if (Account.isLoggedIn()) {
+                        Intent intent = new Intent(RantActivity.this, ReplyActivity.class);
+                        intent.putExtra("id", String.valueOf(id));
+                        startActivity(intent);
+                    } else {
+                        toast("please login first");
+                    }
                 }
             }
         }));

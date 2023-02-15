@@ -96,7 +96,7 @@ public class OptionActivity extends Activity {
         menuItems.add(new OptionsItem(null,"VERSION "+versionName,0));
         menuItems.add(new OptionsItem(null,"UPDATE",0));
         menuItems.add(new OptionsItem(null,"- information -",1));
-        menuItems.add(new OptionsItem(null,"tip: if you want OPEN ON PHONE to open in devRant go to:\n\nphone/settings/apps/devRant/setAsDefault/webAddresses\n\nand enable all",1));
+        menuItems.add(new OptionsItem(null,"tip: if you want OPEN ON PHONE to open in devRant navigate to:\n\nphone/settings/apps/devRant/setAsDefault/webAddresses\n\nand enable all URLs.",1));
         menuItems.add(new OptionsItem(null,"the update btn uses a github template api",1));
 
         menuItems.add(new OptionsItem(null,"CARTOONS",3));
@@ -115,9 +115,9 @@ public class OptionActivity extends Activity {
         menuItems.add(new OptionsItem(null,"TERMS OF SERVICE*",3));
         menuItems.add(new OptionsItem(null,"PRIVACY POLICY*",3));
         menuItems.add(new OptionsItem(null,"*watchRant is not in any way affiliated with devRant."+
-                "If you use watchRant however, you connect to devRants API and thereby need to agree to their privacy policy and terms of service.",1));
+                "If you use watchRant however, you connect to the API of devRant and there by need to agree to their privacy policy and terms of service.",1));
         menuItems.add(new OptionsItem(null,"By tapping on CHECK FOR UPDATE, a Github endpoint API is being accessed. No account or personal data is being sent.",1));
-        menuItems.add(new OptionsItem(null,"This app is open source and therefore you can check and change anything that it does anyways.",1));
+        menuItems.add(new OptionsItem(null,"This app is open source and can be found on Github.",1));
     }
 
     private void build(ArrayList<OptionsItem> menuItems) {

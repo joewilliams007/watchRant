@@ -10,7 +10,7 @@
     <application
         android:name=".auth.MyApplication"
         android:allowBackup="true"
-        android:icon="@drawable/loader_icon_border_dark1"
+        android:icon="@drawable/loader_icon_border_black1"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault">
