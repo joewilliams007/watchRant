@@ -5,7 +5,7 @@ Compatible with wear os minsdk 28.
 
 Tested and developed on Samsung watch5.
 
-## PlayStore (alternatives below)
+## PlayStore
 https://play.google.com/store/apps/details?id=com.dev.watchrant
 
 Note: The newest version will always be on Github first.
