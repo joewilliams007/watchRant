@@ -5,6 +5,11 @@ Compatible with wear os minsdk 28.
 
 Tested and developed on Samsung watch5.
 
+## PlayStore
+https://play.google.com/store/apps/details?id=com.dev.watchrant
+
+Note: The newest version will always be on Github first.
+
 ## Features
 
 | Available |                Feature           |
@@ -38,6 +43,8 @@ More to come!
 [Click to download apk](https://github.com/joewilliams007/watchRant/blob/master/app/release/app-release.apk?raw=true)
 
 Or download from here: https://github.com/joewilliams007/watchRant/blob/master/app/release/app-release.apk
+
+Or PlayStore https://play.google.com/store/apps/details?id=com.dev.watchrant
 
 ## Installation
 
