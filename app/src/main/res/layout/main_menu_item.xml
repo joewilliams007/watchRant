@@ -42,4 +42,6 @@
         android:layout_centerHorizontal="true"
         android:src="@drawable/dev_rant"
         tools:ignore="HardcodedText" />
+
+
 </RelativeLayout>

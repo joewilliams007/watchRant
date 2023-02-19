@@ -2,6 +2,7 @@ package com.dev.watchrant;
 
 import static com.dev.watchrant.MainActivity.sort;
 import static com.dev.watchrant.RantActivity.openUrl;
+import static com.dev.watchrant.RantActivity.vibrate;
 import static com.dev.watchrant.network.RetrofitClient.BASE_URL;
 
 import android.annotation.SuppressLint;
@@ -91,6 +92,7 @@ public class OptionActivity extends Activity {
         }
         menuItems.add(new OptionsItem(null,"THEME",0));
         menuItems.add(new OptionsItem(null,"ANIMATION",0));
+        menuItems.add(new OptionsItem(null,"VIBRATION",0));
         menuItems.add(new OptionsItem(null,"LIMIT",0));
         String versionName = BuildConfig.VERSION_NAME;
         menuItems.add(new OptionsItem(null,"VERSION "+versionName,0));
@@ -193,38 +195,41 @@ public class OptionActivity extends Activity {
                             Account.setAnimate(true);
                             toast("animation enabled");
                         }
+                        vibrate();
+                        break;
+                    case "VIBRATION":
+                        if (Account.vibrate()) {
+                            Account.setVibrate(false);
+                            toast("vibration disabled");
+                        } else {
+                            Account.setVibrate(true);
+                            toast("vibration enabled");
+                        }
+                        vibrate();
                         break;
                     case "CARTOONS":
-                        toast("check phone");
                         openUrl("https://www.youtube.com/devrantapp");
                         break;
                     case "PODCASTS":
-                        toast("check phone");
                         openUrl("https://soundcloud.com/devrantapp");
                         break;
                     case "TWITTER":
-                        toast("check phone");
                         openUrl("https://twitter.com/devrantapp/");
                         break;
                     case "FACEBOOK":
-                        toast("check phone");
                         openUrl("https://www.facebook.com/devrantapp/");
                         break;
                     case "ISSUE TRACKER":
-                        toast("check phone");
                         openUrl("https://github.com/joewilliams007/watchRant");
                         break;
                     case "TERMS OF SERVICE*":
-                        toast("check phone");
-                        openUrl("https://devrant.com/feed/top/month?signup=1");
+                        openUrl("https://devrant.com/terms");
                         break;
                     case "PRIVACY POLICY*":
-                        toast("check phone");
                         openUrl("https://devrant.com/privacy");
                         break;
                     case "REGISTER":
-                        toast("check phone");
-                        openUrl("https://devrant.com/terms");
+                        openUrl("https://devrant.com/feed/top/month?signup=1");
                         break;
                     case "LIMIT":
                         if (Account.limit() == 10) {

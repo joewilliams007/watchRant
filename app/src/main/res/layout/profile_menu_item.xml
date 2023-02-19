@@ -38,6 +38,6 @@
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_centerHorizontal="true"
-        android:src="@drawable/dev_rant"
+        android:src="@drawable/circle_dots"
         tools:ignore="HardcodedText" />
 </RelativeLayout>

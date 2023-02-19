@@ -1,6 +1,7 @@
 package com.dev.watchrant;
 
 import static com.dev.watchrant.ProfileActivity.profile_rants;
+import static com.dev.watchrant.RantActivity.vibrate;
 import static com.dev.watchrant.network.RetrofitClient.BASE_URL;
 import static com.dev.watchrant.SearchActivity.search_rants;
 
@@ -19,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.wear.widget.SwipeDismissFrameLayout;
 import androidx.wear.widget.WearableLinearLayoutManager;
 import androidx.wear.widget.WearableRecyclerView;
@@ -27,6 +29,7 @@ import com.dev.watchrant.adapters.MainMenuAdapter;
 import com.dev.watchrant.adapters.RantItem;
 import com.dev.watchrant.animations.RantLoadingAnimation;
 import com.dev.watchrant.auth.Account;
+import com.dev.watchrant.auth.MyApplication;
 import com.dev.watchrant.classes.Rants;
 import com.dev.watchrant.classes.attached_image;
 import com.dev.watchrant.databinding.ActivityMainBinding;
@@ -77,9 +80,6 @@ public class MainActivity extends Activity {
         if (isSearch) {
             toast("found "+search_rants.size()+" search results");
             createFeedList(search_rants);
-        } else if (profile_rants!=null) {
-            createFeedList(profile_rants);
-            profile_rants = null;
         } else {
             requestFeed();
         }
@@ -214,6 +214,18 @@ public class MainActivity extends Activity {
         wearableRecyclerView.setLayoutManager(
                 new WearableLinearLayoutManager(this, customScrollingLayoutCallback));
 
+        wearableRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView wearableRecyclerView, int newState) {
+                super.onScrollStateChanged(wearableRecyclerView, newState);
+
+                if (!wearableRecyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE) {
+                    Log.d("-----","end");
+                    vibrate();
+                }
+            }
+        });
+
         wearableRecyclerView.setAdapter(new MainMenuAdapter(this, menuItems, new MainMenuAdapter.AdapterCallback() {
             @Override
             public void onItemClicked(final Integer menuPosition) {
@@ -221,17 +233,12 @@ public class MainActivity extends Activity {
 
                 switch (menuItem.getType()) {
                     case "avatar":
-                    case "type":
-                        if (sort.equals("recent")) {
-                            sort = "top";
-                            toast("top");
-                            requestFeed();
-                        } else {
-                            sort = "recent";
-                            toast("recent");
-                            requestFeed();
-                        }
+                    case "type": {
+                        vibrate();
+                        Intent intent = new Intent(MainActivity.this, OptionActivity.class);
+                        startActivity(intent);
                         break;
+                    }
                     case "notif": {
                         Intent intent = new Intent(MainActivity.this, NotifActivity.class);
                         startActivity(intent);

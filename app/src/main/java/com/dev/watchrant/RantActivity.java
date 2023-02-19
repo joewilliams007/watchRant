@@ -9,13 +9,19 @@ import static com.dev.watchrant.network.RetrofitClient.BASE_URL;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
+import android.os.VibratorManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.wear.activity.ConfirmationActivity;
 import androidx.wear.remote.interactions.RemoteActivityHelper;
 import androidx.wear.widget.WearableLinearLayoutManager;
 import androidx.wear.widget.WearableRecyclerView;
@@ -191,39 +197,48 @@ private ActivityRantBinding binding;
                 RantItem menuItem = menuItems.get(menuPosition);
 
 
-                if (menuItem.getType().equals("image")) {
-                    isImage = true;
-                    rant_image = menuItem.getImage();
-                    Intent intent = new Intent(RantActivity.this, AvatarActivity.class);
-                    startActivity(intent);
-                } else if (menuItem.getType().equals("phone")){
-                    toast("launching on phone");
-                    openUrl("https://devrant.com/"+rant_url);
-                } else if (menuItem.getType().equals("comment")) {
-                    if (Account.isLoggedIn()) {
-                        replyText += "@" + menuItem.getUsername()+" ";
-                        Intent intent = new Intent(RantActivity.this, ReplyActivity.class);
-                        intent.putExtra("id", String.valueOf(id));
+                switch (menuItem.getType()) {
+                    case "image": {
+                        isImage = true;
+                        rant_image = menuItem.getImage();
+                        Intent intent = new Intent(RantActivity.this, AvatarActivity.class);
                         startActivity(intent);
-                    } else {
-                        toast("please login first");
+                        break;
                     }
-                } else if (menuItem.getType().equals("details")) {
-                    isImage = false;
-                    Intent intent = new Intent(RantActivity.this, ProfileActivity.class);
-                    intent.putExtra("id", String.valueOf(menuItem.getId()));
-                    startActivity(intent);
-                } else if (menuItem.getType().equals("avatar")) {
-                    Intent intent = new Intent(RantActivity.this, AvatarActivity.class);
-                    startActivity(intent);
-                } else if (menuItem.getType().equals("reply")) {
-                    if (Account.isLoggedIn()) {
-                        Intent intent = new Intent(RantActivity.this, ReplyActivity.class);
-                        intent.putExtra("id", String.valueOf(id));
+                    case "phone":
+                        openUrl("https://devrant.com/" + rant_url);
+                        break;
+                    case "comment":
+                        if (Account.isLoggedIn()) {
+                            replyText += "@" + menuItem.getUsername() + " ";
+                            Intent intent = new Intent(RantActivity.this, ReplyActivity.class);
+                            intent.putExtra("id", String.valueOf(id));
+                            startActivity(intent);
+                        } else {
+                            toast("please login first");
+                        }
+                        break;
+                    case "details": {
+                        isImage = false;
+                        Intent intent = new Intent(RantActivity.this, ProfileActivity.class);
+                        intent.putExtra("id", String.valueOf(menuItem.getId()));
                         startActivity(intent);
-                    } else {
-                        toast("please login first");
+                        break;
                     }
+                    case "avatar": {
+                        Intent intent = new Intent(RantActivity.this, AvatarActivity.class);
+                        startActivity(intent);
+                        break;
+                    }
+                    case "reply":
+                        if (Account.isLoggedIn()) {
+                            Intent intent = new Intent(RantActivity.this, ReplyActivity.class);
+                            intent.putExtra("id", String.valueOf(id));
+                            startActivity(intent);
+                        } else {
+                            toast("please login first");
+                        }
+                        break;
                 }
             }
         }));
@@ -233,7 +248,35 @@ private ActivityRantBinding binding;
         Toast.makeText(MyApplication.getAppContext(), message, Toast.LENGTH_SHORT).show();
     }
 
+    public static void vibrate() {
+        if (!Account.vibrate()) {
+            return;
+        }
+        Vibrator vibrator;
+        VibratorManager vibratorManager;
+        long[] VIBRATE_PATTERN = {500, 500};
+        if (Build.VERSION.SDK_INT>=31) {
+            vibratorManager = (VibratorManager) MyApplication.getAppContext().getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+            vibrator = vibratorManager.getDefaultVibrator();
+        }
+        else {
+            vibrator = (Vibrator) MyApplication.getAppContext().getSystemService(Context.VIBRATOR_SERVICE);
+        }
+
+        // vibrator.vibrate(VibrationEffect.createWaveform(VIBRATE_PATTERN,0));
+        try {
+            vibrator.vibrate(VibrationEffect.createOneShot(10,255));
+        } catch (Exception e) {
+            System.out.println("vibration failed "+e.getMessage());
+        }
+
+    }
     public static void openUrl(String url) {
+        Intent intent = new Intent(MyApplication.getAppContext(), ConfirmationActivity.class);
+        intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.OPEN_ON_PHONE_ANIMATION);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        MyApplication.getAppContext().startActivity(intent);
+        vibrate();
         Executor executor = new Executor() {
             @Override
             public void execute(Runnable runnable) {

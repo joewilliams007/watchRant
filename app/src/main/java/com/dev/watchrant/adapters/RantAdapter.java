@@ -82,12 +82,10 @@ public class RantAdapter extends WearableRecyclerView.Adapter<RantAdapter.Recycl
                 holder.menuItem.setVisibility(View.GONE);
                 holder.menuIcon.setVisibility(View.INVISIBLE);
                 holder.detailsItem.setVisibility(View.GONE);
-
+                holder.menuIcon.setVisibility(View.VISIBLE);
                 if (data_provider.getText()!=null) {
                     new DownloadImageTask(holder.menuIcon)
                             .execute("https://avatars.devrant.com/"+data_provider.getText());
-                } else {
-                    holder.menuIcon.setVisibility(View.VISIBLE);
                 }
                 profile_avatar = data_provider.getText();
 

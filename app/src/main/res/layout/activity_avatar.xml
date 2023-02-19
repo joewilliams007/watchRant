@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:padding="@dimen/box_inset_layout_padding"
     tools:context=".AvatarActivity"
+    android:background="#000000"
     tools:deviceIds="wear">
 
     <ProgressBar
@@ -21,5 +22,6 @@
         android:layout_width="match_parent"
         android:onClick="download"
         android:layout_height="match_parent" />
+
 
 </androidx.wear.widget.BoxInsetLayout>

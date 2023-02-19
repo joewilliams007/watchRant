@@ -2,6 +2,7 @@ package com.dev.watchrant.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +13,10 @@ import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.wear.activity.ConfirmationActivity;
 import androidx.wear.widget.WearableRecyclerView;
 
+import com.dev.watchrant.OptionActivity;
 import com.dev.watchrant.R;
 import com.dev.watchrant.auth.Account;
 import com.dev.watchrant.auth.MyApplication;
@@ -74,7 +77,6 @@ public class MainMenuAdapter extends WearableRecyclerView.Adapter<MainMenuAdapte
                 holder.menuItem.setVisibility(View.GONE);
                 holder.detailsItem.setVisibility(View.GONE);
                 holder.menuIcon.setVisibility(View.VISIBLE);
-
                 break;
             case "details":
                 holder.menuItem.setVisibility(View.VISIBLE);
@@ -154,6 +156,8 @@ public class MainMenuAdapter extends WearableRecyclerView.Adapter<MainMenuAdapte
                 }
             }
         });
+
+
     }
 
     @Override

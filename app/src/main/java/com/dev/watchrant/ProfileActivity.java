@@ -174,25 +174,28 @@ public class ProfileActivity extends Activity {
             @Override
             public void onItemClicked(final Integer menuPosition) {
                 RantItem menuItem = menuItems.get(menuPosition);
-                if(menuItem.getText().equals("RANTS")) {
-                    Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-                    startActivity(intent);
-                } else if (menuItem.getType().equals("avatar")) {
-                    Intent intent = new Intent(ProfileActivity.this, AvatarActivity.class);
-                    startActivity(intent);
-                } else if (menuItem.getType().equals("phone")){
-                    toast("launching on phone");
-                    if (menuItem.getText().equals("OPEN ON PHONE")) {
-                        openUrl("https://devrant.com/users/"+username);
-                    } else if (menuItem.getText().contains("github:")) {
-                        openUrl("https://github.com/"+github);
-                    } else {
-                        openUrl(menuItem.getText());
+                switch (menuItem.getType()) {
+                    case "avatar": {
+                        Intent intent = new Intent(ProfileActivity.this, AvatarActivity.class);
+                        startActivity(intent);
+                        break;
                     }
-                } else if (menuItem.getType().equals("feed")) {
-                    Intent intent = new Intent(ProfileActivity.this, RantActivity.class);
-                    intent.putExtra("id",String.valueOf(menuItem.getId()));
-                    startActivity(intent);
+                    case "phone":
+                        toast("launching on phone");
+                        if (menuItem.getText().equals("OPEN ON PHONE")) {
+                            openUrl("https://devrant.com/users/" + username);
+                        } else if (menuItem.getText().contains("github:")) {
+                            openUrl("https://github.com/" + github);
+                        } else {
+                            openUrl(menuItem.getText());
+                        }
+                        break;
+                    case "feed": {
+                        Intent intent = new Intent(ProfileActivity.this, RantActivity.class);
+                        intent.putExtra("id", String.valueOf(menuItem.getId()));
+                        startActivity(intent);
+                        break;
+                    }
                 }
             }
         }));

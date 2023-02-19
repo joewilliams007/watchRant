@@ -76,6 +76,17 @@ public class Account {
         editor.apply();
     }
 
+    public static Boolean vibrate() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getAppContext());
+        return preferences.getBoolean("vibrate", true);
+    }
+
+    public static void setVibrate(Boolean vibrate) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getAppContext());
+        SharedPreferences.Editor editor = preferences.edit().putBoolean("vibrate",vibrate);
+        editor.apply();
+    }
+
     public static int limit() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getAppContext());
         return preferences.getInt("limit", 50);
