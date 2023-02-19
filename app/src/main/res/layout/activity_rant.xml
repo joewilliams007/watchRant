@@ -18,4 +18,13 @@
         android:focusableInTouchMode="true"
         android:scrollbars="vertical" />
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:indeterminateTint="@color/dark_normalBottomNavigationButton"
+        android:indeterminate="true"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_height="10dp" />
+
 </androidx.wear.widget.BoxInsetLayout>
