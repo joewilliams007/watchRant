@@ -16,6 +16,7 @@ Note: The newest version will always be on Github first.
 | :-----------: | :--------------------------------: |
 |       ✅       | feed (top/recent/algo) |
 |       ✅       | rant (images supported) |
+|       ✅       | up/down -vote rant |
 |       ✅       | comments (images supported)|
 |       ✅       | make huge rant and comment split|
 |       ✅       | login / logout   |
