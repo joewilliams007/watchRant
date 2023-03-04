@@ -23,7 +23,7 @@ Note: The newest version will always be on Github first.
 |       ✅       | upload comment (only text)   |
 |       ✅       | upload rant (only text)   |
 |       ✅       | tap on comment to add @username to your comment    |
-|       ✅       | themes (dark/amoled) |
+|       ✅       | themes (dark/amoled/partlyAmoled/green) |
 |       ✅       | Animation of SIMMORSAL devRantNativeClient   |
 |       ✅       | disable animation   |
 |       ✅       | set rant limit 10-50  |
