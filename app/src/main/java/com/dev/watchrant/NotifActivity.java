@@ -20,6 +20,7 @@ import com.dev.watchrant.adapters.MainMenuAdapter;
 import com.dev.watchrant.adapters.NotifAdapter;
 import com.dev.watchrant.adapters.NotifItem;
 import com.dev.watchrant.adapters.RantItem;
+import com.dev.watchrant.animations.Tools;
 import com.dev.watchrant.auth.Account;
 import com.dev.watchrant.classes.NotifData;
 import com.dev.watchrant.classes.NotifItems;
@@ -47,11 +48,7 @@ public class NotifActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (Account.theme().equals("dark")) {
-            setTheme(R.style.Theme_Dark);
-        } else {
-            setTheme(R.style.Theme_Amoled);
-        }
+        Tools.setTheme(this);
         super.onCreate(savedInstanceState);
 
         binding = ActivityNotifBinding.inflate(getLayoutInflater());

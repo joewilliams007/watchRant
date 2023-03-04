@@ -28,6 +28,7 @@ import androidx.wear.widget.WearableRecyclerView;
 import com.dev.watchrant.adapters.MainMenuAdapter;
 import com.dev.watchrant.adapters.RantItem;
 import com.dev.watchrant.animations.RantLoadingAnimation;
+import com.dev.watchrant.animations.Tools;
 import com.dev.watchrant.auth.Account;
 import com.dev.watchrant.auth.MyApplication;
 import com.dev.watchrant.classes.Rants;
@@ -55,12 +56,7 @@ public class MainActivity extends Activity {
     WearableRecyclerView wearableRecyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (Account.theme().equals("dark")) {
-            setTheme(R.style.Theme_Dark);
-        } else {
-            setTheme(R.style.Theme_Amoled);
-        }
-
+        Tools.setTheme(this);
         super.onCreate(savedInstanceState);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -155,8 +151,9 @@ public class MainActivity extends Activity {
                     createFeedList(rants);
                 } else if (response.code() == 429) {
                     // Handle unauthorized
+                    toast("you are not authorized");
                 } else {
-
+                    toast("no success "+response.message());
                 }
 
                 if (rantLoadingAnimation != null)

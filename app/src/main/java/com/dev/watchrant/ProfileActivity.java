@@ -16,6 +16,7 @@ import androidx.wear.widget.WearableRecyclerView;
 
 import com.dev.watchrant.adapters.ProfileAdapter;
 import com.dev.watchrant.adapters.RantItem;
+import com.dev.watchrant.animations.Tools;
 import com.dev.watchrant.auth.Account;
 import com.dev.watchrant.classes.Counts;
 import com.dev.watchrant.classes.Rants;
@@ -44,11 +45,7 @@ public class ProfileActivity extends Activity {
     String id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (Account.theme().equals("dark")) {
-            setTheme(R.style.Theme_Dark);
-        } else {
-            setTheme(R.style.Theme_Amoled);
-        }
+        Tools.setTheme(this);
         super.onCreate(savedInstanceState);
 
         binding = ActivityProfileBinding.inflate(getLayoutInflater());

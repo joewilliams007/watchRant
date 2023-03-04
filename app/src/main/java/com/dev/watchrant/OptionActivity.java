@@ -25,6 +25,7 @@ import androidx.wear.widget.WearableRecyclerView;
 import com.dev.watchrant.adapters.OptionsAdapter;
 import com.dev.watchrant.adapters.OptionsItem;
 import com.dev.watchrant.adapters.RantItem;
+import com.dev.watchrant.animations.Tools;
 import com.dev.watchrant.auth.Account;
 import com.dev.watchrant.classes.Comment;
 import com.dev.watchrant.classes.Rants;
@@ -54,11 +55,7 @@ public class OptionActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (Account.theme().equals("dark")) {
-            setTheme(R.style.Theme_Dark);
-        } else {
-            setTheme(R.style.Theme_Amoled);
-        }
+        Tools.setTheme(this);
         super.onCreate(savedInstanceState);
 
         binding = ActivityOptionBinding.inflate(getLayoutInflater());
@@ -180,10 +177,16 @@ public class OptionActivity extends Activity {
                     case "THEME":
                         if (Account.theme().equals("dark")) {
                             Account.setTheme("amoled");
-                        } else {
+                        } else if (Account.theme().equals("amoled")){
+                            Account.setTheme("amoled_part");
+                        } else if (Account.theme().equals("amoled_part")){
+                            Account.setTheme("green");
+                        } else if (Account.theme().equals("green")){
                             Account.setTheme("dark");
                         }
-                        intent = new Intent(OptionActivity.this, MainActivity.class);
+
+                        Tools.setTheme(OptionActivity.this);
+                        intent = new Intent(OptionActivity.this, OptionActivity.class);
                         startActivity(intent);
                         finish();
                         break;

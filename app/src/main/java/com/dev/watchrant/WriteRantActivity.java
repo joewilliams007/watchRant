@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.dev.watchrant.animations.Tools;
 import com.dev.watchrant.auth.Account;
 import com.dev.watchrant.databinding.ActivityWriteRantBinding;
 import com.dev.watchrant.models.ModelSuccess;
@@ -34,11 +35,7 @@ public class WriteRantActivity extends Activity {
     String _type;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (Account.theme().equals("dark")) {
-            setTheme(R.style.Theme_Dark);
-        } else {
-            setTheme(R.style.Theme_Amoled);
-        }
+        Tools.setTheme(this);
         super.onCreate(savedInstanceState);
 
         binding = ActivityWriteRantBinding.inflate(getLayoutInflater());

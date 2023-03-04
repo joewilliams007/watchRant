@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.dev.watchrant.animations.Tools;
 import com.dev.watchrant.auth.Account;
 import com.dev.watchrant.auth.MyApplication;
 import com.dev.watchrant.databinding.ActivityAvatarBinding;
@@ -28,11 +29,7 @@ public class AvatarActivity extends Activity {
     int tapped = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (Account.theme().equals("dark")) {
-            setTheme(R.style.Theme_Dark);
-        } else {
-            setTheme(R.style.Theme_Amoled);
-        }
+        Tools.setTheme(this);
         super.onCreate(savedInstanceState);
 
         binding = ActivityAvatarBinding.inflate(getLayoutInflater());

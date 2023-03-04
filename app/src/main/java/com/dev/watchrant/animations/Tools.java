@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
+import com.dev.watchrant.R;
+import com.dev.watchrant.auth.Account;
+
 public class Tools {
 
     public static int pxToDp(int px) {
@@ -38,5 +41,17 @@ public class Tools {
         ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
         screenWidth = dm.widthPixels;
         screenHeight = dm.heightPixels;
+    }
+
+    public static void setTheme(Context context) {
+        if (Account.theme().equals("dark")) {
+            context.setTheme(R.style.Theme_Dark);
+        } else if (Account.theme().equals("amoled")) {
+            context.setTheme(R.style.Theme_Amoled);
+        } else if (Account.theme().equals("amoled_part")) {
+            context.setTheme(R.style.Theme_AmoledPart);
+        } else if (Account.theme().equals("green")) {
+            context.setTheme(R.style.Theme_Green);
+        }
     }
 }

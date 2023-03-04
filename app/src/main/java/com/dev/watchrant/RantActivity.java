@@ -30,6 +30,7 @@ import androidx.wear.widget.WearableRecyclerView;
 
 import com.dev.watchrant.adapters.RantAdapter;
 import com.dev.watchrant.adapters.RantItem;
+import com.dev.watchrant.animations.Tools;
 import com.dev.watchrant.auth.Account;
 import com.dev.watchrant.auth.MyApplication;
 import com.dev.watchrant.classes.Comment;
@@ -71,11 +72,7 @@ private ActivityRantBinding binding;
     public static ArrayList<String> users_of_comments = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        if (Account.theme().equals("dark")) {
-            setTheme(R.style.Theme_Dark);
-        } else {
-            setTheme(R.style.Theme_Amoled);
-        }
+        Tools.setTheme(this);
         super.onCreate(savedInstanceState);
 
          binding = ActivityRantBinding.inflate(getLayoutInflater());
