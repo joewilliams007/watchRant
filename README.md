@@ -23,7 +23,7 @@ Note: The newest version will always be on Github first.
 |       ✅       | upload comment (only text)   |
 |       ✅       | upload rant (only text)   |
 |       ✅       | tap on comment to add @username to your comment    |
-|       ✅       | themes (dark/amoled) |
+|       ✅       | themes (dark/amoled/partlyAmoled/green) |
 |       ✅       | Animation of SIMMORSAL devRantNativeClient   |
 |       ✅       | disable animation   |
 |       ✅       | set rant limit 10-50  |
@@ -38,6 +38,13 @@ Note: The newest version will always be on Github first.
 |       ✅       | credits   |
 
 More to come!
+
+## Bugs
+
+login attempt might result in a "bad request" toast and the feed disappearing.
+cant figure out why devRant API returns invalid tokens sometimes.
+
+solution: tap "logout" and then login again.
 
 ## Download
 
