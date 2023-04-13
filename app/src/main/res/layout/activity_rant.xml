@@ -10,21 +10,25 @@
     android:background="?attr/colorSurface"
     android:padding="@dimen/box_inset_layout_padding">
 
-    <androidx.wear.widget.WearableRecyclerView
-        android:id="@+id/rant_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:scrollbars="vertical" />
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:indeterminate="true"
+            android:indeterminateTint="#FFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:indeterminateTint="@color/dark_normalBottomNavigationButton"
-        android:indeterminate="true"
-        android:layout_width="match_parent"
-        android:layout_marginTop="20dp"
-        android:layout_height="10dp" />
+        <androidx.wear.widget.WearableRecyclerView
+            android:id="@+id/rant_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:scrollbars="vertical" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="50dp"/>
 
 </androidx.wear.widget.BoxInsetLayout>

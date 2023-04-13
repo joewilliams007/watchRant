@@ -4,4 +4,9 @@
     <color name="devBlue">#41435b</color>
     <color name="devLight">#000000</color>
     <color name="dark_normalBottomNavigationButton">#eee</color>
+
+    <color name="dark_imagesBacground">#494949</color>
+    <color name="dark_activityBackground">#FF303030</color>
+    <color name="dark_selectedBottomNavigationButton">#FF8A65</color>
+    <color name="dark_devider">#444</color>
 </resources>

@@ -23,7 +23,12 @@ public class CustomScrollingLayoutCallback extends WearableLinearLayoutManager.L
         // Adjust to the maximum scale
         progressToCenter = Math.min(progressToCenter, MAX_ICON_PROGRESS);
 
-        child.setScaleX(1 - progressToCenter);
-        child.setScaleY(1 - progressToCenter);
+        try {
+            child.setScaleX(1 - progressToCenter);
+            child.setScaleY(1 - progressToCenter);
+        } catch (Exception ignored) {
+
+        }
+
     }
 }

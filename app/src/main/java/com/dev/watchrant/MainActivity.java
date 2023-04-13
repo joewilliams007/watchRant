@@ -8,6 +8,7 @@ import static com.dev.watchrant.SearchActivity.search_rants;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -123,7 +124,7 @@ public class MainActivity extends Activity {
         String total_url;
         if (Account.isLoggedIn()) {
             total_url = BASE_URL
-                    + "devrant/rants?"+"token_id="+Account.id()+"&token_key="+Account.key()+"&user_id="+Account.user_id()+"&app=3&limit="+Account.limit()+"&sort="+sort+"&range=day&skip=0"
+                    + "devrant/rants?&"+"token_id="+Account.id()+"&token_key="+Account.key()+"&user_id="+Account.user_id()+"&app=3&limit="+Account.limit()+"&sort="+sort+"&range=day&skip=0"
                     +"/";
 
         } else {

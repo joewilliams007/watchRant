@@ -2,6 +2,7 @@ package com.dev.watchrant;
 
 import static com.dev.watchrant.network.RetrofitClient.BASE_URL;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,7 +18,10 @@ import androidx.annotation.NonNull;
 import com.dev.watchrant.animations.Tools;
 import com.dev.watchrant.auth.Account;
 import com.dev.watchrant.databinding.ActivityLoginBinding;
+import com.dev.watchrant.methods.MethodsFeed;
+import com.dev.watchrant.models.ModelFeed;
 import com.dev.watchrant.models.ModelLogin;
+import com.dev.watchrant.network.RetrofitClient;
 import com.dev.watchrant.post.LoginClient;
 
 import okhttp3.MediaType;
@@ -118,11 +122,8 @@ public class LoginActivity extends Activity {
                     Account.setUser_id(user_id);
                     Account.setExpire_time(expire_time);
 
-                    toast("you sir, are now logged in");
+                    tryTokens();
 
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
                 } else if (response.code() == 400) {
                     toast("Invalid login credentials entered. Please try again. :(");
                     editText.setHint("username");
@@ -146,4 +147,38 @@ public class LoginActivity extends Activity {
         });
     }
 
+
+
+    private void tryTokens() {
+            MethodsFeed methods = RetrofitClient.getRetrofitInstance().create(MethodsFeed.class);
+            String  total_url = BASE_URL + "devrant/rants?token_id="+Account.id()+"&user_id="+Account.user_id()+"&token_key="+Account.key()+"&limit=10&sort=recent&app=3&range=day&skip=0/";
+            Call<ModelFeed> call = methods.getAllData(total_url);
+            call.enqueue(new Callback<ModelFeed>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onResponse(@NonNull Call<ModelFeed> call, @NonNull Response<ModelFeed> response) {
+                    if (response.isSuccessful()) {
+                        assert response.body() != null;
+                        Boolean success = response.body().getSuccess();
+
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+
+                        toast("login approved");
+                    } else if (response.code() == 429) {
+                        // Handle unauthorized
+                        toast("you are not authorized");
+                    } else {
+                        login();
+                    }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ModelFeed> call, @NonNull Throwable t) {
+                    Log.d("error_contact", t.toString());
+                    toast("no network");
+            }});
+    }
 }
