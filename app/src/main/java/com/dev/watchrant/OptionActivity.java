@@ -182,6 +182,8 @@ public class OptionActivity extends Activity {
                         } else if (Account.theme().equals("amoled_part")){
                             Account.setTheme("green");
                         } else if (Account.theme().equals("green")){
+                            Account.setTheme("discord");
+                        } else if (Account.theme().equals("discord")){
                             Account.setTheme("dark");
                         }
 

@@ -12,7 +12,9 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -21,6 +23,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.InputDeviceCompat;
+import androidx.core.view.MotionEventCompat;
+import androidx.core.view.ViewConfigurationCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.wear.widget.SwipeDismissFrameLayout;
 import androidx.wear.widget.WearableLinearLayoutManager;
@@ -66,6 +71,29 @@ public class MainActivity extends Activity {
         Intent intent = getIntent();
         Boolean isSearch = intent.getBooleanExtra("isSearch",false);
         wearableRecyclerView = binding.mainMenuView;
+
+        wearableRecyclerView.setOnGenericMotionListener(new View.OnGenericMotionListener() {
+            @Override
+            public boolean onGenericMotion(View v, MotionEvent ev) {
+                if (ev.getAction() == MotionEvent.ACTION_SCROLL &&
+                        ev.isFromSource(InputDeviceCompat.SOURCE_ROTARY_ENCODER)
+                ) {
+                    // Don't forget the negation here
+                    float delta = -ev.getAxisValue(MotionEventCompat.AXIS_SCROLL) *
+                            ViewConfigurationCompat.getScaledVerticalScrollFactor(
+                                    ViewConfiguration.get(MainActivity.this), MainActivity.this
+                            );
+
+                    // Swap these axes to scroll horizontally instead
+                    v.scrollBy(0, Math.round(delta));
+
+                    return true;
+                }
+                return false;
+            }
+        });
+
+
         progressBar = findViewById(R.id.progressBar);
         imageView = findViewById(R.id.imageView);
         if (!Account.theme().equals("dark")) {

@@ -14,8 +14,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
+        android:textColor="?attr/colorOnPrimary"
+        android:textColorHint="?attr/colorOnPrimary"
         android:inputType="textPersonName"
         android:hint="enter search" />
 
@@ -23,7 +23,7 @@
         android:id="@+id/textViewSubmit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
+        android:textColor="?attr/colorOnPrimary"
         android:gravity="center"
         android:background="@drawable/rounded_corner"
         android:padding="5dp"

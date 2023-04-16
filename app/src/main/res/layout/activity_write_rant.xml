@@ -16,8 +16,8 @@
         android:ems="10"
         android:layout_marginTop="20dp"
         android:textSize="10sp"
-        android:textColor="#FFFFFF"
-        android:textColorHint="#FFFFFF"
+        android:textColor="?attr/colorOnPrimary"
+        android:textColorHint="?attr/colorOnPrimary"
         android:inputType="textMultiLine"
         android:hint="rant" />
 
@@ -25,7 +25,7 @@
         android:id="@+id/textViewSubmit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#FFFFFF"
+        android:textColor="?attr/colorOnPrimary"
         android:text="submit rant"
         android:gravity="center"
         android:fontFamily="@font/nunito"
