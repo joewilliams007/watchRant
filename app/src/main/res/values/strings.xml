@@ -57,4 +57,10 @@
     <string name="title_activity_reply">ReplyActivity</string>
     <string name="title_activity_notif">NotifActivity</string>
     <string name="title_activity_write_rant">WriteRantActivity</string>
+    <string name="title_activity_presentation._digital_watch_face_wearable_config">
+        presentation.DigitalWatchFaceWearableConfigActivity
+    </string>
+    <string name="title_activity_digital_watch_face_wearable_config">
+        DigitalWatchFaceWearableConfigActivity
+    </string>
 </resources>

@@ -28,12 +28,18 @@ import com.dev.watchrant.adapters.RantItem;
 import com.dev.watchrant.animations.Tools;
 import com.dev.watchrant.auth.Account;
 import com.dev.watchrant.classes.Comment;
+import com.dev.watchrant.classes.Counts;
 import com.dev.watchrant.classes.Rants;
+import com.dev.watchrant.classes.User_avatar;
 import com.dev.watchrant.databinding.ActivityOptionBinding;
+import com.dev.watchrant.methods.MethodsProfile;
 import com.dev.watchrant.methods.MethodsRant;
 import com.dev.watchrant.methods.MethodsUpdate;
+import com.dev.watchrant.models.ModelProfile;
 import com.dev.watchrant.models.ModelRant;
 import com.dev.watchrant.models.ModelUpdate;
+import com.dev.watchrant.network.DownloadAvatar;
+import com.dev.watchrant.network.DownloadImageTask;
 import com.dev.watchrant.network.RetrofitClient;
 import com.google.android.gms.wearable.NodeClient;
 import com.google.android.gms.wearable.Wearable;
@@ -87,7 +93,9 @@ public class OptionActivity extends Activity {
             menuItems.add(new OptionsItem(null,"LOGIN",0));
             menuItems.add(new OptionsItem(null,"REGISTER",0));
         }
+
         menuItems.add(new OptionsItem(null,"THEME",0));
+        menuItems.add(new OptionsItem(null,"WATCHFACE",0));
         menuItems.add(new OptionsItem(null,"ANIMATION",0));
         menuItems.add(new OptionsItem(null,"VIBRATION",0));
         menuItems.add(new OptionsItem(null,"LIMIT",0));
@@ -209,6 +217,14 @@ public class OptionActivity extends Activity {
                         } else {
                             Account.setVibrate(true);
                             toast("vibration enabled");
+                        }
+                        vibrate();
+                        break;
+                    case "WATCHFACE":
+                        if (Account.isLoggedIn()) {
+                            requestAvatar();
+                        } else {
+                            toast("pleas login first");
                         }
                         vibrate();
                         break;
@@ -427,5 +443,45 @@ public class OptionActivity extends Activity {
 
     public void toast(String message) {
         Toast.makeText(OptionActivity.this, message, Toast.LENGTH_SHORT).show();
+    }
+    private void requestAvatar() {
+        MethodsProfile methods = RetrofitClient.getRetrofitInstance().create(MethodsProfile.class);
+        String total_url;
+        if (Account.isLoggedIn()){
+            total_url = BASE_URL + "users/"+Account.user_id()+"?app=3&token_id="+Account.id()+"&token_key="+Account.key()+"&user_id="+Account.user_id();
+        } else {
+            total_url = BASE_URL + "users/"+Account.user_id()+"?app=3";
+        }
+        Call<ModelProfile> call = methods.getAllData(total_url);
+        call.enqueue(new Callback<ModelProfile>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onResponse(@NonNull Call<ModelProfile> call, @NonNull Response<ModelProfile> response) {
+                if (response.isSuccessful()) {
+
+                    // Do awesome stuff
+                    assert response.body() != null;
+
+                    String user_avatar = response.body().getProfile().getAvatar().getI();
+                    if (user_avatar == null || user_avatar.equals("")) {
+                        toast("no avatar");
+                    } else {
+                        new DownloadAvatar()
+                                .execute("https://avatars.devrant.com/"+user_avatar);
+                    }
+                } else if (response.code() == 429) {
+                    // Handle unauthorized
+                } else {
+                    toast(response.message());
+                }
+
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ModelProfile> call, @NonNull Throwable t) {
+                Log.d("error_contact", t.toString());
+                toast(t.toString());
+            }
+        });
     }
 }

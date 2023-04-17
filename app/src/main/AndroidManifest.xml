@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <uses-feature android:name="android.hardware.type.watch" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.google.android.wearable.permission.RECEIVE_COMPLICATION_DATA" />
 
     <application
         android:name=".auth.MyApplication"
@@ -13,7 +15,7 @@
         android:icon="@drawable/loader_icon_border_black1"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@android:style/Theme.DeviceDefault">
+        android:theme="@android:style/Theme.DeviceDefault" >
         <uses-library
             android:name="com.google.android.wearable"
             android:required="true" />
@@ -25,8 +27,13 @@
         <meta-data
             android:name="com.google.android.wearable.standalone"
             android:value="true" />
+
         <activity
-            android:name="androidx.wear.activity.ConfirmationActivity">
+            android:name=".presentation.DigitalWatchFaceWearableConfigActivity"
+            android:exported="false"
+            android:label="@string/title_activity_presentation._digital_watch_face_wearable_config"
+            android:theme="@android:style/Theme.DeviceDefault" />
+        <activity android:name="androidx.wear.activity.ConfirmationActivity" >
         </activity>
         <activity
             android:name=".WriteRantActivity"
@@ -67,13 +74,47 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".MyWatchFace"
+            android:exported="true"
+            android:label="Avatar"
+            android:permission="android.permission.BIND_WALLPAPER" >
+
+            <!--
+            By default, Watchfaces on rectangular devices will be run in a emulation mode where they
+            are provided a square surface to draw the watchface (allows watchfaces built for
+            circular and square devices to work well).
+
+            For this watchface, we explicitly enable rectangular devices, so we get the complete
+            surface.
+            -->
+            <meta-data
+                android:name="android.service.wallpaper.square_mode"
+                android:value="false" />
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/watch_face" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview"
+                android:resource="@drawable/empty_screen_full_black1" />
+            <meta-data
+                android:name="com.google.android.wearable.watchface.preview_circular"
+                android:resource="@drawable/empty_screen_full_black1" />
+
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" />
+
+                <category android:name="com.google.android.wearable.watchface.category.WATCH_FACE" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
