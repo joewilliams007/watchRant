@@ -66,6 +66,8 @@ public class Tools {
             context.setTheme(R.style.Theme_Green);
         } else if (Account.theme().equals("discord")) {
             context.setTheme(R.style.Theme_Discord);
+        } else if (Account.theme().equals("coffee")) {
+            context.setTheme(R.style.Theme_Coffee);
         }
     }
 
