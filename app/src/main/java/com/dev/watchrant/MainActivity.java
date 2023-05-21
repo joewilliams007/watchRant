@@ -72,28 +72,6 @@ public class MainActivity extends Activity {
         Boolean isSearch = intent.getBooleanExtra("isSearch",false);
         wearableRecyclerView = binding.mainMenuView;
 
-        wearableRecyclerView.setOnGenericMotionListener(new View.OnGenericMotionListener() {
-            @Override
-            public boolean onGenericMotion(View v, MotionEvent ev) {
-                if (ev.getAction() == MotionEvent.ACTION_SCROLL &&
-                        ev.isFromSource(InputDeviceCompat.SOURCE_ROTARY_ENCODER)
-                ) {
-                    // Don't forget the negation here
-                    float delta = -ev.getAxisValue(MotionEventCompat.AXIS_SCROLL) *
-                            ViewConfigurationCompat.getScaledVerticalScrollFactor(
-                                    ViewConfiguration.get(MainActivity.this), MainActivity.this
-                            );
-
-                    // Swap these axes to scroll horizontally instead
-                    v.scrollBy(0, Math.round(delta));
-
-                    return true;
-                }
-                return false;
-            }
-        });
-
-
         progressBar = findViewById(R.id.progressBar);
         imageView = findViewById(R.id.imageView);
         if (!Account.theme().equals("dark")) {
@@ -190,6 +168,7 @@ public class MainActivity extends Activity {
                 progressBar.setVisibility(View.GONE);
                 imageView.setVisibility(View.GONE);
                 wearableRecyclerView.setVisibility(View.VISIBLE);
+                wearableRecyclerView.requestFocus();
 
             }
 

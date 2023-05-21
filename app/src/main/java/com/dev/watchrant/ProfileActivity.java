@@ -196,7 +196,7 @@ public class ProfileActivity extends Activity {
                 }
             }
         }));
-
+        wearableRecyclerView.requestFocus();
 
     }
 

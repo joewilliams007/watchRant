@@ -280,6 +280,7 @@ private ActivityRantBinding binding;
                 }
             }
         }));
+        wearableRecyclerView.requestFocus();
     }
 
     private void votePost(int i) {

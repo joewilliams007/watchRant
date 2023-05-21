@@ -303,6 +303,8 @@ public class OptionActivity extends Activity {
 
             }
         }));
+
+        wearableRecyclerView.requestFocus();
     }
 
     public void createChooseList() {

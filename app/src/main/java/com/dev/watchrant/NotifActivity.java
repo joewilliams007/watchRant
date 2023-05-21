@@ -141,5 +141,7 @@ public class NotifActivity extends Activity {
                 }
             }
         }));
+
+        wearableRecyclerView.requestFocus();
     }
 }
