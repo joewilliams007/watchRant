@@ -40,13 +40,6 @@ Note: The newest version will always be on Github first.
 
 More to come!
 
-## Bugs
-
-login attempt might result in a "bad request" toast and the feed disappearing.
-cant figure out why devRant API returns invalid tokens sometimes.
-
-solution: tap "logout" and then login again.
-
 ## Download
 
 [Click to download apk](https://github.com/joewilliams007/watchRant/blob/master/app/release/app-release.apk?raw=true)
