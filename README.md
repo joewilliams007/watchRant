@@ -12,30 +12,31 @@ Note: The newest version will always be on Github first.
 
 ## Features
 
-| Available |                Feature           |
-| :-----------: | :--------------------------------: |
-|       ✅       | feed (top/recent/algo) |
-|       ✅       | rant (images supported) |
-|       ✅       | up/down -vote rant |
-|       ✅       | comments (images supported)|
-|       ✅       | make huge rant and comment split|
-|       ✅       | login / logout   |
-|       ✅       | upload comment (only text)   |
-|       ✅       | upload rant (only text)   |
-|       ✅       | tap on comment to add @username to your comment    |
-|       ✅       | themes (dark/amoled/partlyAmoled/green) |
-|       ✅       | Animation of SIMMORSAL devRantNativeClient   |
-|       ✅       | disable animation   |
-|       ✅       | set rant limit 10-50  |
-|       ✅       | social media btns of devRant    |
-|       ✅       | profile (about/website/.../rants)   |
-|       ✅       | update (checks for updates)   |
-|       ✅       | download (images/avatars)   |
-|       ✅       | search (rants/profiles)   |
-|       ✅       | surprise me   |
-|       ✅       | notifications (amount/tapOnNotifs/SetNotifRead)   |
-|       ✅       | open on phone   |
-|       ✅       | credits   |
+- [x] feed (top/recent/algo)
+- [x] rant (images supported)
+- [x] up/down -vote rant
+- [x] comments (images supported)
+- [x] make huge rant and comment split
+- [x] login / logout
+- [x] upload comment (only text)
+- [x] upload rant (only text)
+- [x] tap on comment to add @username to your comment
+- [x] themes (dark/amoled/partlyAmoled/green)
+- [x] Animation of SIMMORSAL devRantNativeClient
+- [x] disable animation
+- [x] set rant limit 10-50
+- [x] social media btns of devRant
+- [x] profile (about/website/.../rants)
+- [x] update (checks for updates)
+- [x] download (images/avatars)
+- [x] search (rants/profiles)
+- [x] surprise me
+- [x] notifications (amount/tapOnNotifs/SetNotifRead)
+- [x] open on phone
+- [x] skyAPI implementation
+- [x] sync blocked users and words from sky
+- [x] react to posts and view reactions
+- [ ] sky chat
 
 More to come!
 
