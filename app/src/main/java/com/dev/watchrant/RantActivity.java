@@ -3,9 +3,12 @@ package com.dev.watchrant;
 import static com.dev.watchrant.ProfileActivity.isImage;
 
 import static com.dev.watchrant.ProfileActivity.rant_image;
+import static com.dev.watchrant.ReactionActivity.reactions;
+import static com.dev.watchrant.ReplyActivity.isReaction;
 import static com.dev.watchrant.ReplyActivity.replyText;
 import static com.dev.watchrant.ReplyActivity.uploaded_comment;
 import static com.dev.watchrant.network.RetrofitClient.BASE_URL;
+import static com.dev.watchrant.network.RetrofitClient.SKY_SERVER_URL;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -35,12 +38,15 @@ import com.dev.watchrant.auth.Account;
 import com.dev.watchrant.auth.MyApplication;
 import com.dev.watchrant.classes.Comment;
 import com.dev.watchrant.classes.Rants;
+import com.dev.watchrant.classes.sky.Reactions;
 import com.dev.watchrant.databinding.ActivityRantBinding;
 import com.dev.watchrant.methods.MethodsImgRant;
 import com.dev.watchrant.methods.MethodsRant;
+import com.dev.watchrant.methods.sky.MethodsSkyPost;
 import com.dev.watchrant.models.ModelImgRant;
 import com.dev.watchrant.models.ModelRant;
 import com.dev.watchrant.models.ModelSuccess;
+import com.dev.watchrant.models.sky.ModelSkyPost;
 import com.dev.watchrant.network.RetrofitClient;
 import com.dev.watchrant.post.CommentClient;
 import com.dev.watchrant.post.VoteClient;
@@ -84,8 +90,48 @@ private ActivityRantBinding binding;
         progressBar = findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
         requestComments();
-    }
 
+    }
+    private void getReactions() {
+        try {
+            MethodsSkyPost methods = RetrofitClient.getRetrofitInstance().create(MethodsSkyPost.class);
+            String total_url = SKY_SERVER_URL+"post/"+id;
+
+            Call<ModelSkyPost> call = methods.getAllData(total_url);
+
+            call.enqueue(new Callback<ModelSkyPost>() {
+                @SuppressLint("SetTextI18n")
+                @Override
+                public void onResponse(@NonNull Call<ModelSkyPost> call, @NonNull Response<ModelSkyPost> response) {
+                    if (response.isSuccessful()) {
+                        assert response.body() != null;
+
+                        reactions = response.body().getReactions();
+                        String s_reactions = "";
+                        for (Reactions reaction : reactions){
+                            s_reactions += reaction.getReaction()+" ";
+                        }
+                        if (s_reactions.length()>0) {
+                            menuItems.add(2,new RantItem(null,s_reactions,0, "reactions",0,0,0,null,0));
+                            build(menuItems);
+                        }
+                    } else if (response.code() == 429) {
+                        // Handle unauthorized
+                        toast("you are not authorized");
+                    } else {
+                        toast("no success "+response.message());
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ModelSkyPost> call, @NonNull Throwable t) {
+                    Log.d("error_contact", t.toString());
+                }
+            });
+        } catch (Exception e) {
+
+        }
+    }
     private void requestComments() {
 
         menuItems = new ArrayList<>();
@@ -129,7 +175,7 @@ private ActivityRantBinding binding;
                     }
                     menuItems.add(new RantItem(null,"++ UPVOTE",0, "++",0,0,0,null,0));
                     menuItems.add(new RantItem(null,"-- DOWNVOTE",0, "--",0,0,0,null,0));
-
+                    menuItems.add(new RantItem(null,"REACT",0, "react",0,0,0,null,0));
                     menuItems.add(new RantItem(null,"amount",0,"amount",rant.getScore(),rant.getNum_comments(),rant.getCreated_time(),rant.getUser_username(),rantVote));
 
                     if (rant.getAttached_image().toString().contains("http")) {
@@ -138,6 +184,7 @@ private ActivityRantBinding binding;
                     }
 
                     createFeedList(comments, menuItems);
+                    getReactions();
                     progressBar.setVisibility(View.GONE);
                 } else if (response.code() == 429) {
                     // Handle unauthorized
@@ -167,8 +214,39 @@ private ActivityRantBinding binding;
     }
 
     public void createFeedList(List<Comment> comments, ArrayList<RantItem> menuItems){
+        String[] blockedWords = Account.blockedWords().split(",");
+        String[] blockedUsers = Account.blockedUsers().split(",");
         for (Comment comment : comments){
             String s = comment.getBody();
+            String username = comment.getUser_username().toLowerCase();
+            String s_check = s.toLowerCase();
+            boolean containsBlocked = false;
+
+            if (Account.blockGreenDot()) {
+                if (comment.getUser_avatar().getI()==null) {
+                    containsBlocked = true;
+                }
+            }
+
+            if (Account.blockWordsComments()&&Account.blockedWords()!=null&&!Account.blockedWords().equals("") && !containsBlocked) {
+                for (String word : blockedWords) {
+                    if (s_check.contains(word)) {
+                        containsBlocked = true;
+                        break;
+                    }
+                }
+            }
+            if (Account.blockUsersComments()&&Account.blockedUsers()!=null&&!Account.blockedUsers().equals("") && !containsBlocked) {
+                for (String user : blockedUsers) {
+                    if (username.equals(user.toLowerCase())) {
+                        containsBlocked = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!containsBlocked) {
+
             int rantVote = comment.getVote_state();
             if (Account.user_id() == comment.getUser_id()) {
                 rantVote = 0;
@@ -191,14 +269,16 @@ private ActivityRantBinding binding;
             }
 
             menuItems.add(new RantItem(null,"amount",0,"amountComment",comment.getScore(),0,comment.getCreated_time(),comment.getUser_username(),rantVote));
-        }
 
+            }
+        }
         menuItems.add(new RantItem(null,"REPLY",0, "reply",0,0,0,null,0));
 
         menuItems.add(new RantItem(null,"OPEN ON PHONE",0, "phone",0,0,0,null,0));
         build(menuItems);
     }
 
+    RantAdapter rantAdapter;
     private void build(ArrayList<RantItem> menuItems) {
         WearableRecyclerView wearableRecyclerView = binding.rantView;
 
@@ -207,7 +287,7 @@ private ActivityRantBinding binding;
         wearableRecyclerView.setLayoutManager(
                 new WearableLinearLayoutManager(this, customScrollingLayoutCallback));
 
-        wearableRecyclerView.setAdapter(new RantAdapter(this, menuItems, new RantAdapter.AdapterCallback() {
+        rantAdapter = new RantAdapter(this, menuItems, new RantAdapter.AdapterCallback() {
             @Override
             public void onItemClicked(final Integer menuPosition) {
                 RantItem menuItem = menuItems.get(menuPosition);
@@ -248,11 +328,33 @@ private ActivityRantBinding binding;
                     }
                     case "reply":
                         if (Account.isLoggedIn()) {
+                            isReaction = false;
                             Intent intent = new Intent(RantActivity.this, ReplyActivity.class);
                             intent.putExtra("id", String.valueOf(id));
                             startActivity(intent);
                         } else {
                             toast("please login first");
+                        }
+                        break;
+                    case "react":
+                        if (Account.isLoggedIn()) {
+                            if (Account.isSessionSkyVerified()) {
+                                isReaction = true;
+                                Intent intent = new Intent(RantActivity.this, ReplyActivity.class);
+                                intent.putExtra("id", String.valueOf(id));
+                                startActivity(intent);
+                            } else {
+                                toast("please verify to sky in settings first");
+                            }
+                        } else {
+                            toast("please login first");
+                        }
+                        break;
+                    case "reactions":
+
+                        if (reactions!=null) {
+                            Intent intent = new Intent(RantActivity.this, ReactionActivity.class);
+                            startActivity(intent);
                         }
                         break;
                     case "++":
@@ -279,7 +381,8 @@ private ActivityRantBinding binding;
                         break;
                 }
             }
-        }));
+        });
+        wearableRecyclerView.setAdapter(rantAdapter);
         wearableRecyclerView.requestFocus();
     }
 

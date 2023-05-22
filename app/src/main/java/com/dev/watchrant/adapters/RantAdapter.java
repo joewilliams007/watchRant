@@ -183,8 +183,10 @@ public class RantAdapter extends WearableRecyclerView.Adapter<RantAdapter.Recycl
                 holder.menuItem.setTextColor(Color.parseColor("#f4945c"));
                 break;
             case "reply":
+            case "react":
             case "++":
             case "--":
+            case "reactions":
                 holder.menuItem.setVisibility(View.VISIBLE);
                 holder.menuIcon.setVisibility(View.GONE);
                 holder.menuItem.setText(data_provider.getText());

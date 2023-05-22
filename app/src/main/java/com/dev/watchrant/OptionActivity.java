@@ -4,6 +4,7 @@ import static com.dev.watchrant.MainActivity.sort;
 import static com.dev.watchrant.RantActivity.openUrl;
 import static com.dev.watchrant.RantActivity.vibrate;
 import static com.dev.watchrant.network.RetrofitClient.BASE_URL;
+import static com.dev.watchrant.network.RetrofitClient.SKY_SERVER_URL;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -31,28 +32,42 @@ import com.dev.watchrant.classes.Comment;
 import com.dev.watchrant.classes.Counts;
 import com.dev.watchrant.classes.Rants;
 import com.dev.watchrant.classes.User_avatar;
+import com.dev.watchrant.classes.sky.SkyProfile;
 import com.dev.watchrant.databinding.ActivityOptionBinding;
 import com.dev.watchrant.methods.MethodsProfile;
 import com.dev.watchrant.methods.MethodsRant;
 import com.dev.watchrant.methods.MethodsUpdate;
+import com.dev.watchrant.methods.git.MethodsVerifyGithub;
+import com.dev.watchrant.methods.sky.MethodsSkyProfile;
+import com.dev.watchrant.methods.sky.MethodsVerifySkyKey;
 import com.dev.watchrant.models.ModelProfile;
 import com.dev.watchrant.models.ModelRant;
 import com.dev.watchrant.models.ModelUpdate;
+import com.dev.watchrant.models.git.ModelVerifyGithub;
+import com.dev.watchrant.models.sky.ModelSkyProfile;
+import com.dev.watchrant.models.sky.ModelSuccess;
+import com.dev.watchrant.models.sky.ModelVerifySkyKey;
 import com.dev.watchrant.network.DownloadAvatar;
 import com.dev.watchrant.network.DownloadImageTask;
 import com.dev.watchrant.network.RetrofitClient;
+import com.dev.watchrant.post.CommentClient;
 import com.google.android.gms.wearable.NodeClient;
 import com.google.android.gms.wearable.Wearable;
 import com.google.common.util.concurrent.ListenableFuture;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class OptionActivity extends Activity {
 
@@ -93,6 +108,8 @@ public class OptionActivity extends Activity {
             menuItems.add(new OptionsItem(null,"LOGIN",0));
             menuItems.add(new OptionsItem(null,"REGISTER",0));
         }
+
+        menuItems.add(new OptionsItem(null,"SKY",0));
 
         menuItems.add(new OptionsItem(null,"THEME",0));
         menuItems.add(new OptionsItem(null,"WATCHFACE",0));
@@ -153,8 +170,12 @@ public class OptionActivity extends Activity {
                         startActivity(intent);
                         break;
                     case "NEW RANT":
-                        toast("select type");
-                        createChooseList();
+                        if (Account.isLoggedIn()) {
+                            toast("select type");
+                            createChooseList();
+                        } else {
+                            toast("please login first");
+                        }
                         break;
                     case "UPDATE":
                         checkUpdate();
@@ -294,6 +315,23 @@ public class OptionActivity extends Activity {
                         intent.putExtra("type", "6");
                         startActivity(intent);
                         break;
+                    case "SKY":
+                        if (Account.isLoggedIn()) {
+                            createSkyList();
+                        } else {
+                            toast("please login first");
+                        }
+                        break;
+                    case "verify":
+                        verify();
+                        break;
+                    case "sync following and blocked":
+                        if (Account.isSessionSkyVerified()) {
+                            syncSkyData();
+                        } else {
+                            toast("please verify first");
+                        }
+                        break;
                 }
                 if (menuItem.getText().contains("VERSION")) {
                     int versionCode = BuildConfig.VERSION_CODE;
@@ -307,6 +345,17 @@ public class OptionActivity extends Activity {
         wearableRecyclerView.requestFocus();
     }
 
+
+
+
+    private void createSkyList() {
+        ArrayList<OptionsItem> menuItems = new ArrayList<>();
+        menuItems.add(new OptionsItem(null,"sky cloud",1));
+        menuItems.add(new OptionsItem(null,"verify",0));
+        menuItems.add(new OptionsItem(null,"sync following and blocked",0));
+        build(menuItems);
+    }
+
     public void createChooseList() {
         ArrayList<OptionsItem> menuItems = new ArrayList<>();
         menuItems.add(new OptionsItem(null,"select type",1));
@@ -316,6 +365,38 @@ public class OptionActivity extends Activity {
         menuItems.add(new OptionsItem(null,"devRant",0));
         menuItems.add(new OptionsItem(null,"Random",0));
         build(menuItems);
+    }
+    private void verify() {
+        String message = "verify account to third party server? session id and user id will get shared. session password and key will not be shared";
+        if (Account.isSessionSkyVerified()) {
+            message = "you are already verified. you can verify again if you want to";
+        }
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(this)
+                .setTitle("verify")
+                .setMessage(message)
+                .setCancelable(true)
+
+                .setPositiveButton(
+                        "Yes, verify",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                                toast("connecting ...");
+                                progressBar.setVisibility(View.VISIBLE);
+                                getGithubServerInfo();
+                            }
+                        })
+
+                .setNegativeButton(
+                        "No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+        AlertDialog alert = builder1.create();
+        alert.show();
     }
 
     private void getSurpriseId() { // Get random Rant. Need to make 2 api calls cuz comments don't come with the surprise sadly
@@ -375,6 +456,7 @@ public class OptionActivity extends Activity {
                         Account.setExpire_time(0);
                         Account.setUser_id(0);
                         Account.setId(0);
+                        Account.setSessionSkyVerified(false);
 
                         toast("logged out");
                         createFeedList();
@@ -485,6 +567,278 @@ public class OptionActivity extends Activity {
             public void onFailure(@NonNull Call<ModelProfile> call, @NonNull Throwable t) {
                 Log.d("error_contact", t.toString());
                 toast(t.toString());
+            }
+        });
+    }
+
+    private void getGithubServerInfo() {
+        String total_url = "https://raw.githubusercontent.com/joewilliams007/jsonapi/gh-pages/skyserver.json";
+        MethodsVerifyGithub methods = RetrofitClient.getRetrofitInstance().create(MethodsVerifyGithub.class);
+        String header = null;
+
+        Call<ModelVerifyGithub> call = methods.getAllData(header,total_url);
+        call.enqueue(new Callback<ModelVerifyGithub>() {
+            @SuppressLint({"SetTextI18n", "SimpleDateFormat"})
+            @Override
+            public void onResponse(@NonNull Call<ModelVerifyGithub> call, @NonNull Response<ModelVerifyGithub> response) {
+                if (response.isSuccessful()) {
+
+                    // Do  awesome stuff
+                    assert response.body() != null;
+
+                    String rant_id = response.body().getRant_id();
+                    String notice = response.body().getNotice();
+                    Boolean active = response.body().getActive();
+
+                    if (active) {
+                        getSkyVerifyKey();
+                    } else {
+                        toast(notice);
+                    }
+
+
+                } else if (response.code() == 429) {
+                    // Handle unauthorized
+                    toast("error contacting github error 429");
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ModelVerifyGithub> call, @NonNull Throwable t) {
+                Log.d("error_contact", t.toString());
+                toast("no network github");
+                getSkyVerifyKey();
+            }
+        });
+
+    }
+
+    // Sky server verification
+    private void getSkyVerifyKey() {
+        try {
+
+        String total_url = SKY_SERVER_URL+"verify_key/"+Account.user_id()+"/"+Account.id();
+        MethodsVerifySkyKey methods = RetrofitClient.getRetrofitInstance().create(MethodsVerifySkyKey.class);
+
+        Call<ModelVerifySkyKey> call = methods.getAllData(total_url);
+        call.enqueue(new Callback<ModelVerifySkyKey>() {
+            @SuppressLint({"SetTextI18n", "SimpleDateFormat"})
+            @Override
+            public void onResponse(@NonNull Call<ModelVerifySkyKey> call, @NonNull Response<ModelVerifySkyKey> response) {
+                if (response.isSuccessful()) {
+
+                    // Do  awesome stuff
+                    assert response.body() != null;
+
+                    Boolean success = response.body().getSuccess();
+                    Boolean error = response.body().getError();
+                    String verify_key = response.body().getVerify_key();
+                    String message = response.body().getMessage();
+                    String verify_post_id = response.body().getVerify_post_id();
+
+                    if (error || !success) {
+                        toast(message);
+                    } else {
+                        uploadC(verify_post_id,verify_key);
+                    }
+
+
+                } else if (response.code() == 429) {
+                    // Handle unauthorized
+                    toast("error contacting github error 429");
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ModelVerifySkyKey> call, @NonNull Throwable t) {
+                Log.d("error_contact", t.toString());
+                toast("no network");
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+        } catch (Exception e) {
+            toast("error connecting to sky. please retry");
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+    private void uploadC(String rant_id, String c) {
+
+        try {
+            RequestBody app = RequestBody.create(MediaType.parse("application/x-form-urlencoded"), "3");
+            RequestBody comment = RequestBody.create(MediaType.parse("application/x-form-urlencoded"), c);
+            RequestBody token_id = RequestBody.create(MediaType.parse("application/x-form-urlencoded"), String.valueOf(Account.id()));
+            RequestBody token_key = RequestBody.create(MediaType.parse("application/x-form-urlencoded"), Account.key());
+            RequestBody user_id = RequestBody.create(MediaType.parse("application/x-form-urlencoded"), String.valueOf(Account.user_id()));
+
+            Retrofit.Builder builder = new Retrofit.Builder().baseUrl(BASE_URL + "devrant/rants/" + rant_id + "/").addConverterFactory(GsonConverterFactory.create());
+            Retrofit retrofit = builder.build();
+
+            CommentClient client = retrofit.create(CommentClient.class);
+            // finally, execute the request
+
+            Call<com.dev.watchrant.models.ModelSuccess> call = client.upload(app, comment, token_id, token_key, user_id);
+            call.enqueue(new Callback<com.dev.watchrant.models.ModelSuccess>() {
+                @Override
+                public void onResponse(@NonNull Call<com.dev.watchrant.models.ModelSuccess> call, @NonNull Response<com.dev.watchrant.models.ModelSuccess> response) {
+                    Log.v("Upload", response + " ");
+
+                    if (response.isSuccessful()) {
+                        // Do awesome stuff
+                        assert response.body() != null;
+                        Boolean success = response.body().getSuccess();
+
+                        if (success) {
+                            askSkyToVerifyComment();
+                        } else {
+                            toast("failed");
+                        }
+
+                    } else if (response.code() == 400) {
+                        toast("Invalid login credentials entered. Please try again. :(");
+                    } else if (response.code() == 429) {
+                        // Handle unauthorized
+                        toast("You are not authorized :P");
+                    } else {
+                        toast(response.message());
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<com.dev.watchrant.models.ModelSuccess> call, @NonNull Throwable t) {
+                    toast("Request failed! " + t.getMessage());
+                    progressBar.setVisibility(View.GONE);
+                }
+
+            });
+        } catch (Exception e) {
+            toast(e.toString());
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
+    private void askSkyToVerifyComment() {
+        try {
+        String total_url = SKY_SERVER_URL+"verify_comment/"+Account.user_id()+"/"+Account.id();
+        MethodsVerifySkyKey methods = RetrofitClient.getRetrofitInstance().create(MethodsVerifySkyKey.class);
+
+        Call<ModelVerifySkyKey> call = methods.getAllData(total_url);
+        call.enqueue(new Callback<ModelVerifySkyKey>() {
+            @SuppressLint({"SetTextI18n", "SimpleDateFormat"})
+            @Override
+            public void onResponse(@NonNull Call<ModelVerifySkyKey> call, @NonNull Response<ModelVerifySkyKey> response) {
+                if (response.isSuccessful()) {
+
+                    // Do  awesome stuff
+                    assert response.body() != null;
+
+                    Boolean success = response.body().getSuccess();
+                    Boolean error = response.body().getError();
+                    String message = response.body().getMessage();
+                    progressBar.setVisibility(View.GONE);
+                    if (error || !success) {
+                        toast(message);
+                    } else {
+                        toast("verified session");
+                        Account.setSessionSkyVerified(true);
+                        createSkyList();
+                    }
+
+
+                } else if (response.code() == 429) {
+                    // Handle unauthorized
+                    toast("error contacting github error 429");
+                } else {
+
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ModelVerifySkyKey> call, @NonNull Throwable t) {
+                Log.d("error_contact", t.toString());
+                toast("no network");
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+        } catch (Exception e) {
+            toast("error connecting to sky. please retry");
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+    private void syncSkyData() {
+        getProfile();
+    }
+    SkyProfile profile;
+    public void restore(String restore_size) {
+        progressBar.setVisibility(View.GONE);
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(this)
+                .setTitle("Sync sky data")
+                .setMessage("Sync following, blocked users, blocked words from sky ("+restore_size+")")
+                .setCancelable(true)
+                .setPositiveButton(
+                        "Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();;
+                                if (profile!=null) {
+                                    if (profile.getFollowing()!=null || profile.getBlocked_words()!=null || profile.getBlocked_users()!=null) {
+                                        Account.setFollowing(profile.getFollowing());
+                                        Account.setBlockedUsers(profile.getBlocked_users());
+                                        Account.setBlockedWords(profile.getBlocked_words());
+                                        toast("synced sky data");
+                                    } else {
+                                        toast("no data to sync");
+                                    }
+                                }
+                            }
+                        })
+
+                .setNegativeButton(
+                        "No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+        AlertDialog alert = builder1.create();
+        alert.show();
+
+    }
+    private void getProfile() {
+        progressBar.setVisibility(View.VISIBLE);
+        MethodsSkyProfile methods = RetrofitClient.getRetrofitInstance().create(MethodsSkyProfile.class);
+        String total_url = SKY_SERVER_URL+"my_profile/"+ Account.user_id()+"/"+Account.id();
+
+        Call<ModelSkyProfile> call = methods.getAllData(total_url);
+
+        call.enqueue(new Callback<ModelSkyProfile>() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onResponse(@NonNull Call<ModelSkyProfile> call, @NonNull Response<ModelSkyProfile> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    profile = response.body().getProfile();
+
+                    String restore_data = profile.getFollowing()+profile.getBlocked_users()+profile.getBlocked_words();
+                    byte[] restore_b = restore_data.getBytes(StandardCharsets.UTF_8);
+                    String restore_size = "restore "+restore_b.length+" bytes";
+
+                    restore(restore_size);
+                } else if (response.code() == 429) {
+                    // Handle unauthorized
+                    toast("you are not authorized");
+                } else {
+                    toast("no success "+response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ModelSkyProfile> call, @NonNull Throwable t) {
+                Log.d("error_contact", t.toString());
+                progressBar.setVisibility(View.GONE);
             }
         });
     }

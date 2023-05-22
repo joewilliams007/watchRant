@@ -9,6 +9,7 @@
     tools:context=".ReplyActivity"
     tools:deviceIds="wear">
 
+
     <EditText
         android:id="@+id/editText"
         android:layout_width="match_parent"
@@ -34,4 +35,6 @@
         android:padding="2dp"
         android:onClick="enter"
         android:layout_below="@+id/editText" />
+
+
 </androidx.wear.widget.BoxInsetLayout>

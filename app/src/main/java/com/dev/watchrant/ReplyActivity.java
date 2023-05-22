@@ -3,7 +3,9 @@ package com.dev.watchrant;
 import static com.dev.watchrant.RantActivity.toast;
 import static com.dev.watchrant.RantActivity.users_of_comments;
 import static com.dev.watchrant.network.RetrofitClient.BASE_URL;
+import static com.dev.watchrant.network.RetrofitClient.SKY_SERVER_URL;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,16 +15,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.wear.widget.WearableLinearLayoutManager;
 import androidx.wear.widget.WearableRecyclerView;
 
 import com.dev.watchrant.animations.Tools;
 import com.dev.watchrant.auth.Account;
 import com.dev.watchrant.databinding.ActivityReplyBinding;
+import com.dev.watchrant.methods.sky.MethodsVerifySkyKey;
 import com.dev.watchrant.models.ModelLogin;
 import com.dev.watchrant.models.ModelSuccess;
+import com.dev.watchrant.models.sky.ModelVerifySkyKey;
+import com.dev.watchrant.network.RetrofitClient;
 import com.dev.watchrant.post.CommentClient;
 import com.dev.watchrant.post.LoginClient;
+import com.fasterxml.jackson.databind.node.BooleanNode;
 
 import java.util.ArrayList;
 
@@ -39,9 +46,11 @@ public class ReplyActivity extends Activity {
 
     private ActivityReplyBinding binding;
     EditText editText;
+    TextView textViewSubmit;
     String id;
     public static String replyText = "";
     public static Boolean uploaded_comment = false;
+    public static Boolean isReaction = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Tools.setTheme(this);
@@ -51,12 +60,21 @@ public class ReplyActivity extends Activity {
         setContentView(binding.getRoot());
 
         editText = findViewById(R.id.editText);
-        editText.setText(replyText);
+        textViewSubmit = findViewById(R.id.textViewSubmit);
 
         Intent intent = getIntent();
         id = intent.getStringExtra("id");
 
         uploaded_comment = false;
+
+
+        if (isReaction) {
+            textViewSubmit.setText("submit emoji");
+            editText.setHint("reaction (emoji)");
+        } else {
+            textViewSubmit.setText("submit comment");
+            editText.setText(replyText);
+        }
     }
 
     @Override
@@ -67,13 +85,81 @@ public class ReplyActivity extends Activity {
 
     public void enter(View view) {
         String c = editText.getText().toString();
-        if (c.length()<1) {
-            toast("enter comment");
+        if (isReaction) {
+            react(c);
         } else {
-            toast("uploading ...");
-            uploadC(c);
+            if (c.length()<1) {
+                toast("enter comment");
+            } else {
+                toast("uploading ...");
+                uploadC(c);
+            }
         }
+
     }
+
+    private void react(String c) {
+
+        if (c.length()<1) {
+                toast("enter emoji");
+                return;
+            }
+
+            if (c.length()>3) {
+                toast("enter one emoji only");
+                return;
+            }
+
+            if (c.contains("u")) {
+                if (c.replaceFirst("u","").contains("u")) {
+                    toast("enter only one emoji");
+                    return;
+                }
+            }
+
+
+
+            String total_url = SKY_SERVER_URL+"react_post/"+Account.user_id()+"/"+Account.id()+"/"+id+"/"+ c;
+            MethodsVerifySkyKey methods = RetrofitClient.getRetrofitInstance().create(MethodsVerifySkyKey.class);
+
+            Call<ModelVerifySkyKey> call = methods.getAllData(total_url);
+            call.enqueue(new Callback<ModelVerifySkyKey>() {
+                @SuppressLint({"SetTextI18n", "SimpleDateFormat"})
+                @Override
+                public void onResponse(@NonNull Call<ModelVerifySkyKey> call, @NonNull Response<ModelVerifySkyKey> response) {
+                    if (response.isSuccessful()) {
+
+                        // Do  awesome stuff
+                        assert response.body() != null;
+
+                        Boolean success = response.body().getSuccess();
+                        Boolean error = response.body().getError();
+                        String message = response.body().getMessage();
+
+                        if (success) {
+                            uploaded_comment = true;
+                            finish();
+                        }
+
+                        if (error) {
+                            toast(message);
+                        }
+                    } else if (response.code() == 429) {
+                        // Handle unauthorized
+                        toast("error contacting github error 429");
+                    } else {
+
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ModelVerifySkyKey> call, @NonNull Throwable t) {
+                    Log.d("error_contact", t.toString());
+                    toast("no network");
+                }
+            });
+    }
+
 
     private void uploadC(String c) {
 

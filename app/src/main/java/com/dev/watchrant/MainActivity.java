@@ -194,17 +194,56 @@ public class MainActivity extends Activity {
             menuItems.add(new RantItem(null,null,0,"notif",notif_amount, 0,0,null,0));
         }
 
+        String[] blockedWords = Account.blockedWords().split(",");
+        String[] blockedUsers = Account.blockedUsers().split(",");
         for (Rants rant : rants){
             String s = rant.getText();
-            if (s.length()>100) {
-                s = s.substring(0, Math.min(s.length(), 100))+"...";
+            String username = rant.getUser_username().toLowerCase();
+
+            String[] tags = rant.getTags();
+            String t = "";
+            for (String tag: tags) {
+                t+=tag;
             }
 
-            if (rant.getAttached_image().toString().contains("http")) {
-                menuItems.add(new RantItem(null,s,rant.getId(),"feed",rant.getScore(), rant.getNum_comments(),0,null,rant.getVote_state()));
-                menuItems.add(new RantItem(null,s,rant.getId(),"image",rant.getScore(), rant.getNum_comments(),0,null,rant.getVote_state()));
-            } else {
-                menuItems.add(new RantItem(null,s,rant.getId(),"feed",rant.getScore(), rant.getNum_comments(),0,null,rant.getVote_state()));
+            String s_check = s.toLowerCase()+t.toLowerCase();
+            boolean containsBlocked = false;
+
+            if (Account.blockGreenDot()) {
+                if (rant.getUser_avatar().getI()==null) {
+                    containsBlocked = true;
+                }
+            }
+
+            if (Account.blockedWords()!=null&&!Account.blockedWords().equals("") && !containsBlocked) {
+                for (String word : blockedWords) {
+                    if (s_check.contains(word)) {
+                        containsBlocked = true;
+                        break;
+                    }
+                }
+            }
+            if (Account.blockedUsers()!=null&&!Account.blockedUsers().equals("") && !containsBlocked) {
+                for (String user : blockedUsers) {
+                    if (username.equals(user.toLowerCase())) {
+                        containsBlocked = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!containsBlocked) {
+
+                if (s.length() > 100) {
+                    s = s.substring(0, Math.min(s.length(), 100)) + "...";
+                }
+
+                if (rant.getAttached_image().toString().contains("http")) {
+                    menuItems.add(new RantItem(null, s, rant.getId(), "feed", rant.getScore(), rant.getNum_comments(), 0, null, rant.getVote_state()));
+                    menuItems.add(new RantItem(null, s, rant.getId(), "image", rant.getScore(), rant.getNum_comments(), 0, null, rant.getVote_state()));
+                } else {
+                    menuItems.add(new RantItem(null, s, rant.getId(), "feed", rant.getScore(), rant.getNum_comments(), 0, null, rant.getVote_state()));
+                }
             }
 
         }

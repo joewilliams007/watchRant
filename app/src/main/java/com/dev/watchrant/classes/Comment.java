@@ -1,5 +1,7 @@
 package com.dev.watchrant.classes;
 
+import java.util.List;
+
 public class Comment {
     int id;
     int rant_id;
@@ -16,7 +18,11 @@ public class Comment {
     String user_username;
     int user_score;
     Object attached_image;
+    User_avatar user_avatar;
 
+    public User_avatar getUser_avatar() {
+        return user_avatar;
+    }
     public Object getAttached_image() {
         return attached_image;
     }

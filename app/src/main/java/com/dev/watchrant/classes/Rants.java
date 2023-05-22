@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 public class Rants {
     int id;
@@ -31,6 +32,12 @@ public class Rants {
         return user_avatar;
     }
     int vote_state;
+
+    String[] tags;
+
+    public String[] getTags() {
+        return tags;
+    }
 
     public int getVote_state() {
         return vote_state;
