@@ -118,10 +118,10 @@ public class OptionActivity extends Activity {
         menuItems.add(new OptionsItem(null,"LIMIT",0));
         String versionName = BuildConfig.VERSION_NAME;
         menuItems.add(new OptionsItem(null,"VERSION "+versionName,0));
-        menuItems.add(new OptionsItem(null,"UPDATE",0));
+        // menuItems.add(new OptionsItem(null,"UPDATE",0));
         menuItems.add(new OptionsItem(null,"- information -",1));
         menuItems.add(new OptionsItem(null,"tip: if you want OPEN ON PHONE to open in devRant navigate to:\n\nphone/settings/apps/devRant/setAsDefault/webAddresses\n\nand enable all URLs.",1));
-        menuItems.add(new OptionsItem(null,"the update btn uses a github template api",1));
+        // menuItems.add(new OptionsItem(null,"the update btn uses a github template api",1));
 
         menuItems.add(new OptionsItem(null,"CARTOONS",3));
         menuItems.add(new OptionsItem(null,"PODCASTS",3));
@@ -134,14 +134,20 @@ public class OptionActivity extends Activity {
         menuItems.add(new OptionsItem(null,"dfox & trogus\n(devRant team)",1));
         menuItems.add(new OptionsItem(null,"SIMMORSAL\n(rant animation)",1));
         menuItems.add(new OptionsItem(null,"Skayo & frogstair\n(api docs)",1));
-        build(menuItems);
+
+        menuItems.add(new OptionsItem(null,"- GitHub -",1));
+        menuItems.add(new OptionsItem(null,"watchRant",3));
+        menuItems.add(new OptionsItem(null,"skyRant",3));
+        menuItems.add(new OptionsItem(null,"skyAPI",3));
         menuItems.add(new OptionsItem(null,"- legal -",1));
         menuItems.add(new OptionsItem(null,"TERMS OF SERVICE*",3));
         menuItems.add(new OptionsItem(null,"PRIVACY POLICY*",3));
-        menuItems.add(new OptionsItem(null,"*watchRant is not in any way affiliated with devRant."+
+        menuItems.add(new OptionsItem(null,"*watchRant is not in any way affiliated with devRant. "+
                 "If you use watchRant however, you connect to the API of devRant and there by need to agree to their privacy policy and terms of service.",1));
-        menuItems.add(new OptionsItem(null,"By tapping on CHECK FOR UPDATE, a Github endpoint API is being accessed. No account or personal data is being sent.",1));
-        menuItems.add(new OptionsItem(null,"This app is open source and can be found on Github.",1));
+        // menuItems.add(new OptionsItem(null,"By tapping on CHECK FOR UPDATE, a Github endpoint API is being accessed. No account or personal data is being sent.",1));
+        // menuItems.add(new OptionsItem(null,"This app is open source and can be found on Github.",1));
+
+        build(menuItems);
     }
 
     private void build(ArrayList<OptionsItem> menuItems) {
@@ -275,6 +281,16 @@ public class OptionActivity extends Activity {
                     case "REGISTER":
                         openUrl("https://devrant.com/feed/top/month?signup=1");
                         break;
+                    case "watchRant":
+                        openUrl("https://github.com/joewilliams007/watchRant");
+                        break;
+                    case "skyRant":
+                        openUrl("https://github.com/joewilliams007/skyRant");
+                        break;
+                    case "skyAPI":
+                        openUrl("https://github.com/joewilliams007/skyAPI");
+                        break;
+
                     case "LIMIT":
                         if (Account.limit() == 10) {
                             Account.setLimit(20);
@@ -332,6 +348,14 @@ public class OptionActivity extends Activity {
                             toast("please verify first");
                         }
                         break;
+                    case "following":
+                        if (Account.isSessionSkyVerified()) {
+                            intent = new Intent(OptionActivity.this, FollowingActivity.class);
+                            startActivity(intent);
+                        } else {
+                            toast("please verify first");
+                        }
+                        break;
                 }
                 if (menuItem.getText().contains("VERSION")) {
                     int versionCode = BuildConfig.VERSION_CODE;
@@ -353,6 +377,8 @@ public class OptionActivity extends Activity {
         menuItems.add(new OptionsItem(null,"sky cloud",1));
         menuItems.add(new OptionsItem(null,"verify",0));
         menuItems.add(new OptionsItem(null,"sync following and blocked",0));
+        menuItems.add(new OptionsItem(null,"following",0));
+
         build(menuItems);
     }
 

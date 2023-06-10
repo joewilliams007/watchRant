@@ -68,6 +68,7 @@ public class MainActivity extends Activity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        
         Intent intent = getIntent();
         Boolean isSearch = intent.getBooleanExtra("isSearch",false);
         wearableRecyclerView = binding.mainMenuView;
@@ -297,6 +298,10 @@ public class MainActivity extends Activity {
                 }
             }
         }));
+
+        wearableRecyclerView.setAlpha(0);
+        wearableRecyclerView.setTranslationY(Tools.dpToPx(40));
+        wearableRecyclerView.animate().alpha(1).translationY(0).setDuration(300).withLayer();
     }
 
     public void toast(String message) {

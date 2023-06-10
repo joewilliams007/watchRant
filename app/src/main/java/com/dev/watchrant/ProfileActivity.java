@@ -117,7 +117,7 @@ public class ProfileActivity extends Activity {
                     menuItems.add(new RantItem(null,
                                     "rants: "+rants_count
                                     +"\nupvoted: "+upvoted_count
-                                    +"\ncomments: "+upvoted_count
+                                    +"\ncomments: "+comments_count
                                     +"\nfavorites: "+favorites_count
                                     +"\ncollabs: "+collabs_count,0,"info_small",0,0,0,null,0));
 

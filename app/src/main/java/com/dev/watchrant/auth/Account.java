@@ -56,7 +56,7 @@ public class Account {
 
     public static String theme() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getAppContext());
-        return preferences.getString("theme", "dark");
+        return preferences.getString("theme", "amoled_part");
     }
 
     public static void setTheme(String theme) {

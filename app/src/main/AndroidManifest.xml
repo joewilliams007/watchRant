@@ -46,6 +46,10 @@
             android:exported="false"
             android:label="@string/title_activity_notif" />
         <activity
+            android:name=".FollowingActivity"
+            android:exported="false"
+            android:label="@string/title_activity_follow" />
+        <activity
             android:name=".ReactionActivity"
             android:exported="false"
             android:label="@string/title_activity_reaction" />
