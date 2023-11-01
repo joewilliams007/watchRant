@@ -207,4 +207,15 @@ public class Account {
         SharedPreferences.Editor editor = preferences.edit().putBoolean("blockGreenDot",blockGreenDot);
         editor.apply();
     }
+
+    public static String watchfaceMode() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getAppContext());
+        return preferences.getString("watchface_mode", "color");
+    }
+
+    public static void setWatchfaceMode(String watchface_mode) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(MyApplication.getAppContext());
+        SharedPreferences.Editor editor = preferences.edit().putString("watchface_mode",watchface_mode);
+        editor.apply();
+    }
 }

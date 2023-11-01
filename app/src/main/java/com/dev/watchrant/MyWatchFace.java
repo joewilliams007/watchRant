@@ -30,6 +30,7 @@ import android.widget.Toast;
 import androidx.palette.graphics.Palette;
 
 import com.dev.watchrant.animations.Tools;
+import com.dev.watchrant.auth.Account;
 import com.dev.watchrant.auth.MyApplication;
 
 import java.lang.ref.WeakReference;
@@ -119,13 +120,22 @@ public class MyWatchFace extends CanvasWatchFaceService {
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             options.inDither = true;
 
-            mBackgroundBitmap = Tools.loadImageFromStorage();
+            if (Account.watchfaceMode().equals("color")) {
+                mBackgroundBitmap = Tools.loadImageFromStorage("avatar.png");
+            } else {
+                mBackgroundBitmap = Tools.loadImageFromStorage("altered_avatar.png");
+            }
+
             if (mBackgroundBitmap == null) {
                 toast("no avatar to set");
                 mBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.empty_screen_full_black1);
             }
 
-            mGrayBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.empty_screen_full_black1);
+            mGrayBackgroundBitmap = Tools.loadImageFromStorage("altered_avatar.png");
+            if (mGrayBackgroundBitmap == null) {
+                toast("no avatar to set");
+                mGrayBackgroundBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.empty_screen_full_black1);
+            }
 
             mBackgroundPaint = new Paint();
             mBackgroundPaint.setColor(Color.BLACK);
@@ -234,7 +244,7 @@ public class MyWatchFace extends CanvasWatchFaceService {
                 float secXr2 = (float) Math.sin(secRot) * r2sec;
                 float secYr2 = (float) -Math.cos(secRot) * r2sec;
                 mHandPaint.setColor(Color.WHITE);
-                canvas.drawLine(centerX + secXr1, centerY + secYr1, centerX + secXr2, centerY + secYr2, mHandPaint);
+                // canvas.drawLine(centerX + secXr1, centerY + secYr1, centerX + secXr2, centerY + secYr2, mHandPaint);
             }
 
 //          MINUTES
@@ -245,15 +255,15 @@ public class MyWatchFace extends CanvasWatchFaceService {
             float minXr2 = (float) Math.sin(minRot) * r2min;
             float minYr2 = (float) -Math.cos(minRot) * r2min;
 //          IF DRAW A LINE
-//            canvas.drawLine(centerX + minXr1, centerY + minYr1, centerX + minXr2, centerY + minYr2, mHandPaint);
-//            mHandPaint.setStrokeWidth(getResources().getDimension(R.dimen.analog_hand_stroke_hours));
+            //canvas.drawLine(centerX + minXr1, centerY + minYr1, centerX + minXr2, centerY + minYr2, mHandPaint);
+            //mHandPaint.setStrokeWidth(getResources().getDimension(R.dimen.analog_hand_stroke_hours));
 //          IF DRAW A CIRCLE
             mHandPaint.setStyle(Paint.Style.FILL);
             if (!mAmbient)
                 mHandPaint.setColor(Color.BLACK);
             else
                 mHandPaint.setColor(Color.WHITE);
-            canvas.drawCircle(centerX + minXr2, centerY + minYr2, 5, mHandPaint);
+            // canvas.drawCircle(centerX + minXr2, centerY + minYr2, 5, mHandPaint);
 
 
 //          HOURS
@@ -264,18 +274,18 @@ public class MyWatchFace extends CanvasWatchFaceService {
             float hrXr2 = (float) Math.sin(hrRot) * r2hr;
             float hrYr2 = (float) -Math.cos(hrRot) * r2hr;
 //          IF DRAW A LINE
-//            canvas.drawLine(centerX + hrXr1, centerY + hrYr1, centerX + hrXr2, centerY + hrYr2, mHandPaint);
+            //canvas.drawLine(centerX + hrXr1, centerY + hrYr1, centerX + hrXr2, centerY + hrYr2, mHandPaint);
 //          IF DRAW A CIRCLE
-            canvas.drawCircle(centerX + hrXr1, centerY + hrYr1, 8, mHandPaint);
+            //canvas.drawCircle(centerX + hrXr1, centerY + hrYr1, 8, mHandPaint);
 
             // display time in digital
             String text = mAmbient
-                    ? String.format("%d:%02d:%02d", mTime.hour, mTime.minute, mTime.second)
-                    : String.format("%d:%02d", mTime.hour, mTime.minute);
-            mTextPaint.setTextSize(30);
+                    ? String.format("%d:%02d", mTime.hour, mTime.minute)
+                    : String.format("%d:%02d:%02d", mTime.hour, mTime.minute, mTime.second);
+            mTextPaint.setTextSize(50);
 
 //             shift up the digital time id there is a card
-            float textYShift = centerY + 120;
+            float textYShift = centerY + 150;
             if (!getPeekCardPosition().isEmpty()) {
                 textYShift = centerY - 85;
             }

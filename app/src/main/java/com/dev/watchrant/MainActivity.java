@@ -2,6 +2,7 @@ package com.dev.watchrant;
 
 import static com.dev.watchrant.ProfileActivity.profile_rants;
 import static com.dev.watchrant.RantActivity.vibrate;
+import static com.dev.watchrant.RantActivity.vibrateSoft;
 import static com.dev.watchrant.network.RetrofitClient.BASE_URL;
 import static com.dev.watchrant.SearchActivity.search_rants;
 
@@ -263,7 +264,7 @@ public class MainActivity extends Activity {
             @Override
             public void onScrollStateChanged(RecyclerView wearableRecyclerView, int newState) {
                 super.onScrollStateChanged(wearableRecyclerView, newState);
-
+                vibrate();
                 if (!wearableRecyclerView.canScrollVertically(1) && newState==RecyclerView.SCROLL_STATE_IDLE) {
                     Log.d("-----","end");
                     vibrate();

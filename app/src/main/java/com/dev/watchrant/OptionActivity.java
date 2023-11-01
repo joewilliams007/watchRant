@@ -113,11 +113,14 @@ public class OptionActivity extends Activity {
 
         menuItems.add(new OptionsItem(null,"THEME",0));
         menuItems.add(new OptionsItem(null,"WATCHFACE",0));
+        if (Account.isLoggedIn()) {
+            menuItems.add(new OptionsItem(null,"WATCHFACEMODE",0));
+        }
         menuItems.add(new OptionsItem(null,"ANIMATION",0));
         menuItems.add(new OptionsItem(null,"VIBRATION",0));
         menuItems.add(new OptionsItem(null,"LIMIT",0));
-        String versionName = BuildConfig.VERSION_NAME;
-        menuItems.add(new OptionsItem(null,"VERSION "+versionName,0));
+        // String versionName = BuildConfig.VERSION_NAME;
+        // menuItems.add(new OptionsItem(null,"VERSION "+versionName,0));
         // menuItems.add(new OptionsItem(null,"UPDATE",0));
         menuItems.add(new OptionsItem(null,"- information -",1));
         menuItems.add(new OptionsItem(null,"tip: if you want OPEN ON PHONE to open in devRant navigate to:\n\nphone/settings/apps/devRant/setAsDefault/webAddresses\n\nand enable all URLs.",1));
@@ -184,7 +187,7 @@ public class OptionActivity extends Activity {
                         }
                         break;
                     case "UPDATE":
-                        checkUpdate();
+                        // checkUpdate();
                         break;
                     case "NOTIF":
                         intent = new Intent(OptionActivity.this, NotifActivity.class);
@@ -251,9 +254,26 @@ public class OptionActivity extends Activity {
                         break;
                     case "WATCHFACE":
                         if (Account.isLoggedIn()) {
+                            toast("downloading avatar...");
+                            progressBar.setVisibility(View.VISIBLE);
                             requestAvatar();
                         } else {
-                            toast("pleas login first");
+                            toast("please login first");
+                        }
+                        vibrate();
+                        break;
+                    case "WATCHFACEMODE":
+                        if (Account.isLoggedIn()) {
+                            if (Account.watchfaceMode().equals("color")) {
+                                Account.setWatchfaceMode("blank");
+                                toast("set to blank mode! reload watchface");
+                            } else {
+                                Account.setWatchfaceMode("color");
+                                toast("set to color mode! reload watchface");
+                            }
+
+                        } else {
+                            toast("please login first");
                         }
                         vibrate();
                         break;
@@ -358,8 +378,8 @@ public class OptionActivity extends Activity {
                         break;
                 }
                 if (menuItem.getText().contains("VERSION")) {
-                    int versionCode = BuildConfig.VERSION_CODE;
-                    toast("version code "+versionCode);
+                    // int versionCode = BuildConfig.VERSION_CODE;
+                    // toast("version code "+versionCode);
                 }
 
 
@@ -520,8 +540,8 @@ public class OptionActivity extends Activity {
 
                     String version = response.body().getVersion();
                     int build = response.body().getBuild();
-                    int versionCode = BuildConfig.VERSION_CODE;
-                    if (versionCode < build) {
+                    // int versionCode = BuildConfig.VERSION_CODE;
+                    /*if (versionCode < build) {
                         toast("Update available: Version "+version+" check phone!");
 
                         Executor executor = new Executor() {
@@ -533,7 +553,7 @@ public class OptionActivity extends Activity {
                        openUrl("");
                     } else {
                         toast("You have the latest version!");
-                    }
+                    }*/
 
                 } else if (response.code() == 429) {
                     // Handle unauthorized
@@ -578,8 +598,13 @@ public class OptionActivity extends Activity {
                     if (user_avatar == null || user_avatar.equals("")) {
                         toast("no avatar");
                     } else {
+                        toast("removing background...");
                         new DownloadAvatar()
-                                .execute("https://avatars.devrant.com/"+user_avatar);
+                                .execute("https://avatars.devrant.com/"+user_avatar.replaceAll("b-","b-1_"),"altered_avatar.png");
+                        new DownloadAvatar()
+                                .execute("https://avatars.devrant.com/"+user_avatar,"avatar.png");
+
+                        progressBar.setVisibility(View.GONE);
                     }
                 } else if (response.code() == 429) {
                     // Handle unauthorized
@@ -592,6 +617,7 @@ public class OptionActivity extends Activity {
             @Override
             public void onFailure(@NonNull Call<ModelProfile> call, @NonNull Throwable t) {
                 Log.d("error_contact", t.toString());
+                progressBar.setVisibility(View.GONE);
                 toast(t.toString());
             }
         });

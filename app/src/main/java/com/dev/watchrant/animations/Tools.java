@@ -71,12 +71,12 @@ public class Tools {
         }
     }
 
-    public static String saveToInternalStorage(Bitmap bitmapImage){
+    public static String saveToInternalStorage(String name, Bitmap bitmapImage){
         ContextWrapper cw = new ContextWrapper(MyApplication.getAppContext());
         // path to /data/data/yourapp/app_data/imageDir
         File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
         // Create imageDir
-        File mypath=new File(directory,"avatar.png");
+        File mypath=new File(directory,name);
 
         FileOutputStream fos = null;
         try {
@@ -98,12 +98,12 @@ public class Tools {
         return directory.getAbsolutePath();
     }
 
-    public static Bitmap loadImageFromStorage()
+    public static Bitmap loadImageFromStorage(String name)
     {
         try {
             ContextWrapper cw = new ContextWrapper(MyApplication.getAppContext());
             File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-            File f=new File(directory, "avatar.png");
+            File f=new File(directory, name);
             Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
             return b;
         }

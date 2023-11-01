@@ -466,6 +466,29 @@ private ActivityRantBinding binding;
         }
 
     }
+    public static void vibrateSoft() {
+        if (!Account.vibrate()) {
+            return;
+        }
+        Vibrator vibrator;
+        VibratorManager vibratorManager;
+        long[] VIBRATE_PATTERN = {500, 500};
+        if (Build.VERSION.SDK_INT>=31) {
+            vibratorManager = (VibratorManager) MyApplication.getAppContext().getSystemService(Context.VIBRATOR_MANAGER_SERVICE);
+            vibrator = vibratorManager.getDefaultVibrator();
+        }
+        else {
+            vibrator = (Vibrator) MyApplication.getAppContext().getSystemService(Context.VIBRATOR_SERVICE);
+        }
+
+        // vibrator.vibrate(VibrationEffect.createWaveform(VIBRATE_PATTERN,0));
+        try {
+            vibrator.vibrate(VibrationEffect.createOneShot(10,70));
+        } catch (Exception e) {
+            System.out.println("vibration failed "+e.getMessage());
+        }
+
+    }
     public static void openUrl(String url) {
         Intent intent = new Intent(MyApplication.getAppContext(), ConfirmationActivity.class);
         intent.putExtra(ConfirmationActivity.EXTRA_ANIMATION_TYPE, ConfirmationActivity.OPEN_ON_PHONE_ANIMATION);
