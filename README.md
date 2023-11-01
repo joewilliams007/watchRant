@@ -8,7 +8,7 @@ Tested and developed on Samsung watch5.
 ## PlayStore
 https://play.google.com/store/apps/details?id=com.dev.watchrant
 
-Note: The newest version will always be on Github first.
+Note: The newest version will always be on Github first. Current GitHub release has updated watchface that removes background for amoled ambient mode. PlayStore release HAS NOT gotten that update yet.
 
 ## Features
 
