@@ -5,10 +5,10 @@ Compatible with wear os minsdk 28.
 
 Tested and developed on Samsung watch5.
 ## Images
-- main feed
+#### main feed
 ![image](https://raw.githubusercontent.com/joewilliams007/watchRant/master/r_6340608_6YoRA.jpg)
 - included watchface with custom avatar
-![image](https://raw.githubusercontent.com/joewilliams007/watchRant/master/20231102_001442.jpg)
+#### ![image](https://raw.githubusercontent.com/joewilliams007/watchRant/master/20231102_001442.jpg)
 
 
 ## PlayStore
