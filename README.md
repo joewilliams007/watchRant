@@ -4,6 +4,9 @@ A devRant client for your watch!
 Compatible with wear os minsdk 28.
 
 Tested and developed on Samsung watch5.
+## Images
+
+
 
 ## PlayStore
 https://play.google.com/store/apps/details?id=com.dev.watchrant
